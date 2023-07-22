@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Database Viewer</title>
+  <!-- Add Bootstrap CSS link -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <div class="container mt-5">
+    <!-- Table to display data -->
+    <table class="table table-striped">
+      <!-- Table header -->
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Co</th>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Hire Date</th>
+          <th>First Check Date</th>
+          <th>Period Begin</th>
+          <th>Period End</th>
+          <th>Check Date</th>
+          <th>E-2 Reg Hours</th>
+          <th>E-3 OT Hours</th>
+          <th>E-WALIWALI</th>
+          <th>E-WALISALWALISAL</th>
+          <th>Original File</th>
+        </tr>
+      </thead>
+      <!-- Table body -->
+      <tbody>
+        <% data.forEach((item, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= item.Co %></td>
+            <td><%= item.ID %></td>
+            <td><%= item.Name %></td>
+            <td><%= item.Department %></td>
+            <td><%= item.HireDate %></td>
+            <td><%= item.FirstCheckDate %></td>
+            <td><%= item.PeriodBegin %></td>
+            <td><%= item.PeriodEnd %></td>
+            <td><%= item.CheckDate %></td>
+            <td><%= item['E-2RegHours'] %></td>
+            <td><%= item['E-3OTHours'] %></td>
+            <td><%= item['E-WALIWALI'] %></td>
+            <td><%= item['E-WALISALWALISAL'] %></td>
+            <td><%= item['Original File'] %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
