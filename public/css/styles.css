@@ -12,4 +12,26 @@ table th {
 table {
     padding-left: 10px;
   }
-  
+
+/* Remove list-style bullets from navbar items */
+.navbar-nav .nav-item {
+  list-style: none;
+  margin: 0;
+}
+
+/* Navbar link color */
+.navbar-nav .nav-link {
+  color: white;
+  text-decoration: none; /* Remove underline */
+  transition: color 0.3s;
+}
+
+/* Navbar link hover color */
+.navbar-nav .nav-link:hover {
+  color: lightgreen;
+}
+
+/* Navbar link active (click) color */
+.navbar-nav .nav-link:active {
+  color: pink;
+}

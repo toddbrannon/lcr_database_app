@@ -11,13 +11,21 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">LCR Capital</a>
     <div class="collapse navbar-collapse justify-content-end">
-      <% if (isLoggedIn) { %>
-        <a class="nav-link text-white" href="#">Upload</a>
-        <a class="nav-link text-white" href="#">Log Out</a>
-      <% } else { %>
-        <a class="nav-link text-white" href="#">Log In</a>
-        <a class="nav-link text-white" href="#">Sign Up</a>
-      <% } %>
+      <ul class="navbar-nav">
+        <% if (isLoggedIn) { %>
+          <li class="nav-item">
+            <a class="nav-link btn btn-link" href="/upload">Upload</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn btn-link" href="/logout">Log Out</a>
+          </li>
+        <% } else { %>
+          <!-- Handle the case where the user is not logged in -->
+          <li class="nav-item">
+            <a class="nav-link btn btn-link" href="/login">Log In</a>
+          </li>
+        <% } %>
+      </ul>
     </div>
   </nav>
   
