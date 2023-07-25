@@ -48,7 +48,7 @@ app.get('/', (req, res) => {
     // Modify the data if needed before passing it to the template
     const dataFromDatabase = results;
 
-    res.render('index', { data: dataFromDatabase, formatDate: formatDate });
+    res.render('index', { data: dataFromDatabase, formatDate: formatDate, isLoggedIn: true });
   });
 });
 

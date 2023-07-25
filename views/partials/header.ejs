@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Database Viewer</title>
+  <!-- Add Bootstrap CSS link -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">LCR Capital</a>
+    <div class="collapse navbar-collapse justify-content-end">
+      <% if (isLoggedIn) { %>
+        <a class="nav-link text-white" href="#">Upload</a>
+        <a class="nav-link text-white" href="#">Log Out</a>
+      <% } else { %>
+        <a class="nav-link text-white" href="#">Log In</a>
+        <a class="nav-link text-white" href="#">Sign Up</a>
+      <% } %>
+    </div>
+  </nav>
+  
