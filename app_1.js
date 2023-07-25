@@ -7,10 +7,14 @@ require('dotenv').config(); // Load environment variables from .env file
 
 // Set up MySQL database connection using .env credentials
 const pool = mysql.createPool({
-  host: process.env.AWS_HOST,
-  user: process.env.AWS_USER,
-  password: process.env.AWS_PASS,
-  database: process.env.AWS_NAME,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  ssl: {
+    rejectUnauthorized: true, // Set this to true to require a valid SSL certificate (REQUIRED)
+    // Other SSL options (e.g., ca, cert, key) can be added if necessary based on your provider's requirements
+  },
   connectionLimit: 10, // Adjust this value based on your needs
   waitForConnections: true,
   queueLimit: 0
