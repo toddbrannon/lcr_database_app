@@ -1,0 +1,15 @@
+/* Reduce font size for table headers */
+table th {
+    font-size: 70%;
+  }
+  
+  /* Reduce font size for table data */
+  table td {
+    font-size: 70%;
+  }
+
+  /* Reduce left-side padding for the table */
+table {
+    padding-left: 10px;
+  }
+  

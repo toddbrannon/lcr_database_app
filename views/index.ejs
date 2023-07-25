@@ -4,19 +4,31 @@
   <title>Database Viewer</title>
   <!-- Add Bootstrap CSS link -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-  <div class="container mt-5">
+  <div class="container-fluid mt-5">
+    <h1 class="mx-3 my-5 text-primary">LCR Capital</h1>
     <!-- Table to display data -->
-    <table class="table table-striped">
+    <table class="table table-striped mx-4 mx-lg-1 px-4"> <!-- Adjust mx-1 and mx-4 classes -->
       <!-- Table header -->
       <thead>
         <tr>
           <th>#</th>
-          <!-- Add table header columns for your database fields -->
-          <th>Column 1</th>
-          <th>Column 2</th>
-          <!-- Add more columns as needed -->
+          <th>Co</th>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Hire Date</th>
+          <th>First Check Date</th>
+          <th>Period Begin</th>
+          <th>Period End</th>
+          <th>Check Date</th>
+          <th>E-2Reg Hours</th>
+          <th>E-3OT Hours</th>
+          <th>E-WALIWALI</th>
+          <th>E-WALISALWALISAL</th>
+          <th>Original File</th>
         </tr>
       </thead>
       <!-- Table body -->
@@ -24,14 +36,31 @@
         <% data.forEach((item, index) => { %>
           <tr>
             <td><%= index + 1 %></td>
-            <!-- Add table data for your database fields -->
-            <td><%= item.column1 %></td>
-            <td><%= item.column2 %></td>
-            <!-- Add more columns as needed -->
+            <td><%= item.Co %></td>
+            <td><%= item.ID %></td>
+            <td><%= item.Name %></td>
+            <td><%= item.Department %></td>
+            <td><%= formatDate(item.HireDate) %></td>
+            <td><%= formatDate(item.FirstCheckDate) %></td>
+            <td><%= formatDate(item.PeriodBegin) %></td>
+            <td><%= formatDate(item.PeriodEnd) %></td>
+            <td><%= formatDate(item.CheckDate) %></td>
+            <td><%= item['E-2RegHours'] %></td>
+            <td><%= item['E-3OTHours'] %></td>
+            <td><%= item['E-WALIWALI'] %></td>
+            <td><%= item['E-WALISALWALISAL'] %></td>
+            <td><%= item['Original File'] %></td>
           </tr>
         <% }); %>
       </tbody>
     </table>
   </div>
+  <!-- Add Bootstrap JS link and your custom JavaScript file link -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="/js/custom.js"></script>
+  
 </body>
+
 </html>
