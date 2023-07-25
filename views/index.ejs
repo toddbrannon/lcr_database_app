@@ -13,20 +13,10 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Co</th>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Department</th>
-          <th>Hire Date</th>
-          <th>First Check Date</th>
-          <th>Period Begin</th>
-          <th>Period End</th>
-          <th>Check Date</th>
-          <th>E-2 Reg Hours</th>
-          <th>E-3 OT Hours</th>
-          <th>E-WALIWALI</th>
-          <th>E-WALISALWALISAL</th>
-          <th>Original File</th>
+          <!-- Add table header columns for your database fields -->
+          <th>Column 1</th>
+          <th>Column 2</th>
+          <!-- Add more columns as needed -->
         </tr>
       </thead>
       <!-- Table body -->
@@ -34,20 +24,10 @@
         <% data.forEach((item, index) => { %>
           <tr>
             <td><%= index + 1 %></td>
-            <td><%= item.Co %></td>
-            <td><%= item.ID %></td>
-            <td><%= item.Name %></td>
-            <td><%= item.Department %></td>
-            <td><%= item.HireDate %></td>
-            <td><%= item.FirstCheckDate %></td>
-            <td><%= item.PeriodBegin %></td>
-            <td><%= item.PeriodEnd %></td>
-            <td><%= item.CheckDate %></td>
-            <td><%= item['E-2RegHours'] %></td>
-            <td><%= item['E-3OTHours'] %></td>
-            <td><%= item['E-WALIWALI'] %></td>
-            <td><%= item['E-WALISALWALISAL'] %></td>
-            <td><%= item['Original File'] %></td>
+            <!-- Add table data for your database fields -->
+            <td><%= item.column1 %></td>
+            <td><%= item.column2 %></td>
+            <!-- Add more columns as needed -->
           </tr>
         <% }); %>
       </tbody>

@@ -16,6 +16,7 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
+
 // Use EJS as the templating engine
 app.set('view engine', 'ejs');
 
