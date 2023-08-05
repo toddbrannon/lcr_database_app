@@ -39,11 +39,11 @@
               <td data-column="ID"><%= item.ID %></td>
               <td data-column="Name"><%= item.Name %></td>
               <td data-column="Co"><%= item.Department %></td>
-              <td data-column="HireDate"><%= formatDate(item.HireDate) %></td>
-              <td data-column="FirstCheckDate"><%= formatDate(item.FirstCheckDate) %></td>
-              <td data-column="PeriodBegin"><%= formatDate(item.PeriodBegin) %></td>
-              <td data-column="PeriodEnd"><%= formatDate(item.PeriodEnd) %></td>
-              <td data-column="CheckDate"><%= formatDate(item.CheckDate) %></td>
+              <td data-column="HireDate"><%= formatDate(item.HireDate, false) %></td>
+              <td data-column="FirstCheckDate"><%= formatDate(item.FirstCheckDate, false) %></td>
+              <td data-column="PeriodBegin"><%= formatDate(item.PeriodBegin, false) %></td>
+              <td data-column="PeriodEnd"><%= formatDate(item.PeriodEnd, false) %></td>
+              <td data-column="CheckDate"><%= formatDate(item.CheckDate, false) %></td>
               <td data-column="E-2RegHours"><%= item['E-2RegHours'] %></td>
               <td data-column="E-3OTHours"><%= item['E-3OTHours'] %></td>
               <td data-column="E-WALIWALI"><%= item['E-WALIWALI'] %></td>

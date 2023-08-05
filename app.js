@@ -38,10 +38,13 @@ function padZero(number, length) {
   return String(number).padStart(length, '0');
 }
 
+
+
 // Define routes and handlers
 
 // GET Root Route
 app.get('/', (req, res) => {
+
   // Implement data retrieval from the database and pass it to the 'index.ejs' template for rendering
   const sqlQuery = 'SELECT Co, ID, Name, Department, HireDate, FirstCheckDate, PeriodBegin, PeriodEnd, CheckDate, `E-2RegHours`, `E-3OTHours`, `E-WALIWALI`, `E-WALISALWALISAL`, TotalHours, Location, JobCode, TotalDays, HoursPerDay FROM EmployeeHours';
   //const sqlQuery = 'SELECT * FROM EmployeeHours';
