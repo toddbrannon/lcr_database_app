@@ -4,48 +4,58 @@
   <div class="container-fluid mt-5">
     <h1 class="mx-3 my-5 text-primary">Denny's Payroll Data</h1>
     <!-- Table to display data -->
-    <table class="table table-striped mx-4 mx-lg-1 px-4"> <!-- Adjust mx-1 and mx-4 classes -->
+    <table id="dataTable" class="table table-striped mx-4 mx-lg-1 px-4"> <!-- Adjust mx-1 and mx-4 classes -->
       <!-- Table header -->
       <thead>
         <tr>
           <th>#</th>
-          <th>Co</th>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Department</th>
-          <th>Hire Date</th>
-          <th>First Check Date</th>
-          <th>Period Begin</th>
-          <th>Period End</th>
-          <th>Check Date</th>
-          <th>E-2Reg Hours</th>
-          <th>E-3OT Hours</th>
-          <th>E-WALIWALI</th>
-          <th>E-WALISALWALISAL</th>
-          <th>Original File</th>
+          <th data-sortable="Co">Co</th>
+          <th data-sortable="ID">ID</th>
+          <th data-sortable="Name">Name</th>
+          <th data-sortable="Department">Department</th>
+          <th data-sortable="Hire Date">Hire Date</th>
+          <th data-sortable="First Check Date">First Check Date</th>
+          <th data-sortable="Period Begin">Period Begin</th>
+          <th data-sortable="Period End">Period End</th>
+          <th data-sortable="Check Date">Check Date</th>
+          <th data-sortable="E-2Reg Hours">E-2Reg Hours</th>
+          <th data-sortable="E-3OT Hours">E-3OT Hours</th>
+          <th data-sortable="E-WALIWALI">E-WALIWALI</th>
+          <th data-sortable="E-WALISALWALISAL">E-WALISALWALISAL</th>
+          <th data-sortable="Total Hours">Total Hours</th>
+          <th data-sortable="Location">Location</th>
+          <th data-sortable="Job Code">Job Code</th>
+          <th data-sortable="Total Days">Total Days</th>
+          <th data-sortable="Hours Per Day">Hours Per Day</th>
         </tr>
       </thead>
       <!-- Table body -->
       <tbody>
-        <% data.forEach((item, index) => { %>
-          <tr>
-            <td><%= index + 1 %></td>
-            <td><%= item.Co %></td>
-            <td><%= item.ID %></td>
-            <td><%= item.Name %></td>
-            <td><%= item.Department %></td>
-            <td><%= formatDate(item.HireDate) %></td>
-            <td><%= formatDate(item.FirstCheckDate) %></td>
-            <td><%= formatDate(item.PeriodBegin) %></td>
-            <td><%= formatDate(item.PeriodEnd) %></td>
-            <td><%= formatDate(item.CheckDate) %></td>
-            <td><%= item['E-2RegHours'] %></td>
-            <td><%= item['E-3OTHours'] %></td>
-            <td><%= item['E-WALIWALI'] %></td>
-            <td><%= item['E-WALISALWALISAL'] %></td>
-            <td><%= item['Original File'] %></td>
-          </tr>
-        <% }); %>
+        <div id="table-body">
+          <% data.forEach((item, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td data-column="Co"><%= item.Co %></td>
+              <td data-column="ID"><%= item.ID %></td>
+              <td data-column="Name"><%= item.Name %></td>
+              <td data-column="Co"><%= item.Department %></td>
+              <td data-column="HireDate"><%= formatDate(item.HireDate) %></td>
+              <td data-column="FirstCheckDate"><%= formatDate(item.FirstCheckDate) %></td>
+              <td data-column="PeriodBegin"><%= formatDate(item.PeriodBegin) %></td>
+              <td data-column="PeriodEnd"><%= formatDate(item.PeriodEnd) %></td>
+              <td data-column="CheckDate"><%= formatDate(item.CheckDate) %></td>
+              <td data-column="E-2RegHours"><%= item['E-2RegHours'] %></td>
+              <td data-column="E-3OTHours"><%= item['E-3OTHours'] %></td>
+              <td data-column="E-WALIWALI"><%= item['E-WALIWALI'] %></td>
+              <td data-column="E-WALISALWALISAL"><%= item['E-WALISALWALISAL'] %></td>
+              <td data-column="TotalHours"><%= item['TotalHours'] %></td>
+              <td data-column="Location"><%= item['Location'] %></td>
+              <td data-column="JobCode"><%= item['JobCode'] %></td>
+              <td data-column="TotalDays"><%= item['TotalDays'] %></td>
+              <td data-column="HoursPerDay"><%= item['HoursPerDay'] %></td>
+            </tr>
+          <% }); %>
+        </div>
       </tbody>
     </table>
   </div>
@@ -54,7 +64,32 @@
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="/js/custom.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
+
+
+  <!-- Add this script tag at the end of your HTML body -->
+
+  <script>
+    $(document).ready(function () {
+      // Initialize DataTable
+      $('#dataTable').DataTable();
+  
+      // Disable ordering for non-sortable columns
+      $('#dataTable').DataTable({
+        columnDefs: [
+          { orderable: false, targets: ['no-sort'] }
+        ]
+      });
+    });
+  </script>
+  
   
 </body>
+
+
+
 
 </html>

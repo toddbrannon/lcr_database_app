@@ -8,3 +8,4 @@ function formatDate(dateString) {
 
   // Export the formatDate function to make it accessible to EJS
 module.exports = { formatDate };
+
