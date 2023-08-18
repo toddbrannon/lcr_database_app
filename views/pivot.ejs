@@ -1,0 +1,68 @@
+
+  <!-- Include the navbar partial -->
+  <%- include ('partials/header') -%>
+
+<div class="container-fluid mt-5">
+  <h1 class="mx-3 my-5 text-primary">Pivot Table</h1>
+  <!-- Table to display pivot data -->
+  <table id="pivotTable" class="table table-striped mx-4 mx-lg-1 px-4">
+    <!-- Table header -->
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Co</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Department</th>
+        <!-- Render columns with Period End Dates -->
+        <% periodEndDates.forEach(date => { %>
+          <th><%= formatDate(date, false) %></th>
+        <% }); %>
+        <th>Total Hours</th>
+      </tr>
+    </thead>
+    <!-- Table body -->
+    <tbody>
+      <div id="table-body">
+        <% data.forEach((item, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= item.Co %></td>
+            <td><%= item.ID %></td>
+            <td><%= item.Name %></td>
+            <td><%= item.Department %></td>
+            <!-- Render columns with Total Hours for each Period End Date -->
+            <% periodEndDates.forEach(date => { %>
+              <td><%= item[date] %></td>
+            <% }); %>
+            <td><%= item.TotalHours %></td>
+          </tr>
+        <% }); %>
+      </div>
+    </tbody>
+  </table>
+</div>
+
+<!-- Add DataTables and DataTables FixedHeader scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/fixedheader/3.2.0/js/dataTables.fixedHeader.min.js"></script>
+
+<!-- Initialize DataTable with FixedHeader -->
+<script>
+  $(document).ready(function () {
+    const pivotTable = $('#pivotTable').DataTable({
+      paging: false, // Disable paging for pivot table
+      fixedHeader: {
+        header: true,
+        footer: true,
+      },
+    });
+
+    // Hide the original header row
+    $('#pivotTable thead tr:eq(0)').addClass('d-none');
+  });
+</script>
+
+<!-- Include your custom JavaScript file link if needed -->
+<script src="/js/custom.js"></script>

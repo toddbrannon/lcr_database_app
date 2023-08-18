@@ -69,6 +69,107 @@ app.get('/', (req, res) => {
   });
 });
 
+// Get Pivot route
+app.get('/pivot', (req, res) => {
+  // Implement data retrieval from the database and pass it to the 'pivot.ejs' template for rendering
+  const sqlQuery = 'SELECT Co, ID, Name, Department, PeriodEnd, TotalHours FROM EmployeeHours';
+
+  pool.query(sqlQuery, (err, results) => {
+    if (err) {
+      console.error('Error fetching data from the database:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    // Extract unique Period End Dates for rendering as columns in the pivot table
+    const periodEndDates = [...new Set(results.map(item => item.PeriodEnd))];
+
+    // Convert data to pivot format
+    const pivotData = {};
+    results.forEach(item => {
+      if (!pivotData[item.ID]) {
+        pivotData[item.ID] = {
+          Co: item.Co,
+          ID: item.ID,
+          Name: item.Name,
+          Department: item.Department,
+          TotalHours: 0,
+        };
+      }
+      pivotData[item.ID][item.PeriodEnd] = item.TotalHours;
+      pivotData[item.ID].TotalHours += item.TotalHours;
+    });
+
+    const dataForPivot = Object.values(pivotData);
+
+    res.render('pivot', { data: dataForPivot, periodEndDates, formatDate: formatDataDate, isLoggedIn: true });
+  });
+});
+
+app.get('/lahaina_pivot', (req, res) => {
+  const periodEndQuery = `
+    SELECT DISTINCT PeriodEnd
+    FROM EmployeeHours AS eh
+    JOIN Location AS loc ON eh.Co = loc.Co
+    WHERE loc.City = 'Lahaina'
+    ORDER BY PeriodEnd;
+  `;
+
+  pool.query(periodEndQuery, (periodEndError, periodEndResults) => {
+    if (periodEndError) {
+      console.error('Error fetching Period End dates:', periodEndError);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    const periodEndDates = periodEndResults.map(row => row.PeriodEnd);
+
+    const dataQuery = `
+      SELECT
+        eh.Co,
+        loc.City,
+        eh.ID,
+        eh.Name,
+        jc.JobDescription,
+        -- Other columns ...
+      FROM
+        EmployeeHours AS eh
+      JOIN
+        Location AS loc ON eh.Co = loc.Co
+      JOIN
+        JobCode AS jc ON SUBSTRING(eh.Department, -2) = jc.JobCode
+      WHERE
+        loc.City = 'Lahaina'
+      ORDER BY
+        jc.JobDescription,
+        eh.Name;
+    `;
+
+    pool.query(dataQuery, (dataError, dataResults) => {
+      if (dataError) {
+        console.error('Error fetching data from the database:', dataError);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+
+      const dataFromDatabase = dataResults.map(row => {
+        const modifiedRow = {};
+        for (const [key, value] of Object.entries(row)) {
+          modifiedRow[key] = key.includes('Date') ? formatDataDate(value, false) : value;
+        }
+        return modifiedRow;
+      });
+
+      res.render('lahaina_pivot', { data: dataFromDatabase, periodEndDates, isLoggedIn: true });
+    });
+  });
+});
+
+
+
+
+
+
 // Function to format date strings or Excel serial dates to MySQL date format (YYYY-MM-DD)
 // Function to format date strings or Excel serial dates to MySQL date format (YYYY-MM-DD)
 function formatDataDate(dateValue, forMySQL = true) {
