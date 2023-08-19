@@ -4,8 +4,16 @@ const mysql = require('mysql2');
 const path = require('path');
 const multer = require('multer');
 const XLSX = require('xlsx');
+const bodyParser = require('body-parser')
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const flash = require('express-flash');
+const bcrypt = require('bcrypt');
 const { formatDate } = require('./public/js/custom');
 require('dotenv').config(); // Load environment variables from .env file
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Set up MySQL database connection using .env credentials
 const pool = mysql.createPool({
@@ -38,12 +46,104 @@ function padZero(number, length) {
   return String(number).padStart(length, '0');
 }
 
+// Use session to manage user login state
+app.use(session({
+  secret: 'ThisIsSomeKindOfSecret',
+  resave: false,
+  saveUninitialized: false
+}));
 
+// Initialize Passport.js for user authentication
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Use express-flash for flashing error messages
+app.use(flash());
+
+// Define a user schema and model for authentication
+const User = {
+  id: 'user-id',
+  email: 'email',
+  username: 'username',
+  password: 'password'
+};
+
+// Middleware to set the isLoggedIn variable
+app.use((req, res, next) => {
+  res.locals.isLoggedIn = req.session.isLoggedIn || false; // Assuming you're using sessions
+  res.locals.currentRoute = req.originalUrl;
+  next();
+});
+
+// Configure Passport.js with LocalStrategy
+passport.use(new LocalStrategy(
+  (username, password, done) => {
+    // Replace this with your actual database query to fetch user data
+    const user = User; // Replace with database query to find user by username
+
+    if (!user) {
+      return done(null, false, { message: 'Incorrect username.' });
+    }
+
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (err) {
+        return done(err);
+      }
+
+      if (!result) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+
+      return done(null, user);
+    });
+  }
+));
+
+// Serialize and deserialize user for session management
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  // Replace this with your actual database query to fetch user data
+  const user = User; // Replace with database query to find user by id
+  done(null, user);
+});
+
+// ... existing code ...
+
+// Implement authentication middleware
+const isAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login');
+};
 
 // Define routes and handlers
 
+// GET Login Route
+app.get('/login', (req, res) => {
+  res.render('login', { messages: req.flash('error') });
+});
+
+
+// POST Login Route
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: true
+}));
+
+// Logout Route
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/login');
+});
+
+
 // GET Root Route
-app.get('/', (req, res) => {
+app.get('/', isAuthenticated, (req, res) => {
 
   // Implement data retrieval from the database and pass it to the 'index.ejs' template for rendering
   const sqlQuery = 'SELECT Co, ID, Name, Department, HireDate, FirstCheckDate, PeriodBegin, PeriodEnd, CheckDate, `E-2RegHours`, `E-3OTHours`, `E-WALIWALI`, `E-WALISALWALISAL`, TotalHours, Location, JobCode, TotalDays, HoursPerDay FROM EmployeeHours';
@@ -68,6 +168,8 @@ app.get('/', (req, res) => {
     res.render('index', { data: dataFromDatabase, formatDate: formatDataDate, isLoggedIn: true });
   });
 });
+
+
 
 // GET Root Route
 app.get('/jobcodes', (req, res) => {

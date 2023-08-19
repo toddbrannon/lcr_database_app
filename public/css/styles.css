@@ -56,3 +56,19 @@ th {
   color: pink;
 }
 
+/* Add custom CSS rules for narrow input fields and button */
+.narrow-input {
+  width: 60%; /* Adjust the width as needed */
+  margin: 0 auto; /* Center the elements */
+}
+
+.narrow-button {
+  width: 40%; /* Adjust the width as needed */
+  margin: 0 auto; /* Center the elements */
+}
+
+.login-card {
+  width: 80%;
+  margin:0 auto;
+}
+
