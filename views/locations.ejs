@@ -1,0 +1,65 @@
+
+  <!-- Include the navbar partial -->
+  <%- include ('partials/header') -%>
+  <div class="container-fluid mt-5">
+    <h1 class="mx-3 my-5 text-primary">Denny's Locations</h1>
+    <!-- Table to display data -->
+    <table id="dataTable" class="table table-striped mx-4 mx-lg-1 px-4"> <!-- Adjust mx-1 and mx-4 classes -->
+      <!-- Table header -->
+      <thead>
+        <tr>
+          <!-- <th>#</th> -->
+          <th data-sortable="Co">Co</th>
+          <th data-sortable="Location">Location</th>
+          <th data-sortable="City">City</th>
+        </tr>
+      </thead>
+      <!-- Table body -->
+      <tbody>
+        <div id="table-body">
+          <% data.forEach((item, index) => { %>
+            <tr>
+              <!-- <td><%= index + 1 %></td> -->
+              <td data-column="Co"><%= item.Co %></td>
+              <td data-column="Location"><%= item.Location %></td>
+              <td data-column="City"><%= item.City %></td>
+            </tr>
+          <% }); %>
+        </div>
+      </tbody>
+    </table>
+  </div>
+  <!-- Add Bootstrap JS link and your custom JavaScript file link -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="/js/custom.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
+
+
+  <!-- Add this script tag at the end of your HTML body -->
+
+  <script>
+    $(document).ready(function () {
+      // Initialize DataTable
+      $('#dataTable').DataTable();
+  
+      // Disable ordering for non-sortable columns
+      $('#dataTable').DataTable({
+        columnDefs: [
+          { orderable: false, targets: ['no-sort'] }
+        ]
+      });
+    });
+  </script>
+  
+  
+</body>
+
+
+
+
+</html>

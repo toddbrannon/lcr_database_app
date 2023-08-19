@@ -69,10 +69,12 @@ app.get('/', (req, res) => {
   });
 });
 
-// Get Pivot route
-app.get('/pivot', (req, res) => {
-  // Implement data retrieval from the database and pass it to the 'pivot.ejs' template for rendering
-  const sqlQuery = 'SELECT Co, ID, Name, Department, PeriodEnd, TotalHours FROM EmployeeHours';
+// GET Root Route
+app.get('/jobcodes', (req, res) => {
+
+  // Implement data retrieval from the database and pass it to the 'index.ejs' template for rendering
+  const sqlQuery = 'SELECT JobCode, JobDescription FROM JobCode;';
+  //const sqlQuery = 'SELECT * FROM EmployeeHours';
 
   pool.query(sqlQuery, (err, results) => {
     if (err) {
@@ -81,30 +83,120 @@ app.get('/pivot', (req, res) => {
       return;
     }
 
-    // Extract unique Period End Dates for rendering as columns in the pivot table
-    const periodEndDates = [...new Set(results.map(item => item.PeriodEnd))];
-
-    // Convert data to pivot format
-    const pivotData = {};
-    results.forEach(item => {
-      if (!pivotData[item.ID]) {
-        pivotData[item.ID] = {
-          Co: item.Co,
-          ID: item.ID,
-          Name: item.Name,
-          Department: item.Department,
-          TotalHours: 0,
-        };
+    // Convert dates to 'MM/DD/YYYY' format for rendering in HTML
+    const dataFromDatabase = results.map((row) => {
+      const modifiedRow = {};
+      for (const [key, value] of Object.entries(row)) {
+        modifiedRow[key] = key.includes('Date') ? formatDataDate(value, false) : value;
       }
-      pivotData[item.ID][item.PeriodEnd] = item.TotalHours;
-      pivotData[item.ID].TotalHours += item.TotalHours;
+      return modifiedRow;
     });
 
-    const dataForPivot = Object.values(pivotData);
-
-    res.render('pivot', { data: dataForPivot, periodEndDates, formatDate: formatDataDate, isLoggedIn: true });
+    res.render('jobcodes', { data: dataFromDatabase, formatDate: formatDataDate, isLoggedIn: true });
   });
 });
+
+// GET Root Route
+app.get('/locations', (req, res) => {
+
+  // Implement data retrieval from the database and pass it to the 'index.ejs' template for rendering
+  const sqlQuery = 'SELECT Co, Location, City FROM Location;';
+  //const sqlQuery = 'SELECT * FROM EmployeeHours';
+
+  pool.query(sqlQuery, (err, results) => {
+    if (err) {
+      console.error('Error fetching data from the database:', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    // Convert dates to 'MM/DD/YYYY' format for rendering in HTML
+    const dataFromDatabase = results.map((row) => {
+      const modifiedRow = {};
+      for (const [key, value] of Object.entries(row)) {
+        modifiedRow[key] = key.includes('Date') ? formatDataDate(value, false) : value;
+      }
+      return modifiedRow;
+    });
+
+    res.render('locations', { data: dataFromDatabase, formatDate: formatDataDate, isLoggedIn: true });
+  });
+});
+
+app.get('/pivot', (req, res) => {
+  const selectedCity = req.query.city || 'Lahaina';
+
+  const query = `
+    SELECT eh.PeriodEnd, eh.Name, j.JobDescription, l.City, SUM(eh.TotalHours) AS TotalHours
+    FROM EmployeeHours AS eh
+    JOIN JobCode AS j ON RIGHT(eh.Department, 2) = j.JobCode
+    JOIN Location AS l ON eh.Co = l.Co
+    WHERE l.City = '${selectedCity}' -- Replace 'SelectedCity' with the selected city value
+    GROUP BY eh.PeriodEnd, eh.Name, j.JobDescription, l.City
+    ORDER BY eh.PeriodEnd, eh.Name, j.JobDescription;
+  `;
+
+  pool.query(query, (error, results) => {
+    if (error) {
+        console.error('Error executing query:', error);
+        return res.status(500).send('Internal Server Error');
+    }
+
+    // Process and pivot data
+    const pivotedData = {}; // Use an object for pivoting
+
+    results.forEach(row => {
+      const key = `${row.Name}-${row.JobDescription}-${row.City}`;
+      if (!pivotedData[key]) {
+          pivotedData[key] = {
+              Name: row.Name,
+              JobDescription: row.JobDescription,
+              City: row.City,
+              PeriodEnds: {} // Initialize an object for Period End values
+          };
+      }
+
+      // Check for null PeriodEnd before adding to PeriodEnds
+      if (row.PeriodEnd !== null) {
+          const formattedDate = new Date(row.PeriodEnd).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+          });
+          pivotedData[key].PeriodEnds[formattedDate] = row.TotalHours;
+      }
+
+      console.log("Period End: ", row.PeriodEnd)
+      console.log("Total Hours: ", row.TotalHours)
+    });
+
+    // Extract unique job descriptions
+    const jobDescriptions = [...new Set(results.map(row => row.JobDescription))];
+
+    // Extract unique Period End dates
+    const periodEndsSet = new Set(results.map(result => result.PeriodEnd && result.PeriodEnd.toISOString()));
+    const periodEnds = Array.from(periodEndsSet).filter(date => date !== null);
+
+    // Format the Period End dates as "MM-DD-YYYY"
+    const formattedPeriodEnds = periodEnds.map(date => {
+      const formattedDate = new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      });
+      return formattedDate;
+    });
+
+    console.log("Period Ends: ", periodEnds)
+    console.log("Formatted Period Ends: ", formattedPeriodEnds)
+
+    res.render('pivot.ejs', { data: pivotedData, jobDescriptions, periodEnds, formattedPeriodEnds, isLoggedIn: true });
+  });
+});
+
+
+
+
 
 app.get('/lahaina_pivot', (req, res) => {
   const periodEndQuery = `
@@ -130,8 +222,7 @@ app.get('/lahaina_pivot', (req, res) => {
         loc.City,
         eh.ID,
         eh.Name,
-        jc.JobDescription,
-        -- Other columns ...
+        jc.JobDescription
       FROM
         EmployeeHours AS eh
       JOIN

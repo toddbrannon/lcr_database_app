@@ -18,6 +18,11 @@
             <a class="nav-link btn btn-link" href="/upload">Upload</a>
           </li>
         <% } %>
+        <% if (isLoggedIn && currentRoute !== '/pivot') { %> <!-- Check currentRoute -->
+          <li class="nav-item">
+            <a class="nav-link btn btn-link" href="/pivot">Report</a>
+          </li>
+        <% } %>
         <% if (isLoggedIn) { %>
           <li class="nav-item">
             <a class="nav-link btn btn-link" href="/logout">Log Out</a>

@@ -8,10 +8,30 @@ table th {
     font-size: 70%;
   }
 
-  /* Reduce left-side padding for the table */
-table {
+  table {
     padding-left: 10px;
-  }
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid black; /* Add border to all sides */
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    border-bottom: 2px solid black; /* Add a thicker border at the bottom of headers */
+}
+
+/* Add styles for specific elements if needed */
+/* .table-bordered {
+    border: 1px solid black;
+} */
+
+.name-column {
+  width: 300px;
+}
 
 /* Remove list-style bullets from navbar items */
 .navbar-nav .nav-item {
@@ -35,3 +55,4 @@ table {
 .navbar-nav .nav-link:active {
   color: pink;
 }
+
