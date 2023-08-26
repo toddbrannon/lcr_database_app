@@ -8,7 +8,7 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
         res.render('upload', { message: '', isLoggedIn: true });
       });
 
-      router.post('/upload', upload.single('file'), (req, res) => {
+      router.post('/upload', upload.single('file'), async (req, res) => {
         // Check if a file was uploaded
         if (!req.file) {
           return res.status(400).send('No file uploaded.');
@@ -80,36 +80,47 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
           const insertQuery = 'INSERT INTO EmployeeHours SET ?';
           const moment = require('moment-timezone');
         
-          data.forEach(entry => {
-            // Convert CheckDate to UTC
-            if (entry.CheckDate) {
-              console.log('Before conversion:', entry.CheckDate);
-              const checkDate = moment(entry.CheckDate).toDate();
-              entry.CheckDate = moment(checkDate).utc().format('YYYY-MM-DD HH:mm:ss');
-            console.log('After conversion:', entry.CheckDate);
-            }
-        
-            pool.query(insertQuery, entry, (err, result) => {
-              if (err) {
-                console.error('Error inserting data into the database:', err);
-              } else {
-                console.log('Data inserted successfully:', result);    
+          return new Promise((resolve, reject) => {
+            let numInserted = 0;
+            data.forEach(entry => {
+              // Convert CheckDate to UTC
+              if (entry.CheckDate) {
+                console.log('Before conversion:', entry.CheckDate);
+                const checkDate = moment(entry.CheckDate).toDate();
+                entry.CheckDate = moment(checkDate).utc().format('YYYY-MM-DD HH:mm:ss');
+                console.log('After conversion:', entry.CheckDate);
               }
+        
+              pool.query(insertQuery, entry, (err, result) => {
+                if (err) {
+                  console.error('Error inserting data into the database:', err);
+                  reject(err);
+                } else {
+                  console.log('Data inserted successfully:', result);
+                  numInserted++;
+                  if (numInserted === data.length) {
+                    resolve();
+                  }
+                }
+              });
             });
           });
         }
       
         try {
           // Call the function to insert data into the database
-          insertDataIntoDatabase(dataToImport);
-      
-          // Respond with success message
-          res.status(200).send('Data imported and inserted successfully.');
+          await insertDataIntoDatabase(dataToImport);
+        
+          // Set a flash message to indicate that data has been uploaded successfully
+          req.flash('success', 'Your data was uploaded successfully!');
+
+          // Redirect to the index route with a query parameter to indicate success
+          res.redirect('/?uploadSuccess=true');
         } catch (error) {
           console.error('Error while processing the uploaded file:', error);
           res.status(500).send('There was an error importing data.');
         }
-      });
+    });
       
       router.post('/upload_xlsx', upload.single('file'), (req, res) => {
         // Check if a file was uploaded

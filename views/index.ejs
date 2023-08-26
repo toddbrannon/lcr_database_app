@@ -1,6 +1,12 @@
 
   <!-- Include the navbar partial -->
   <%- include ('partials/header') -%>
+  <% if (messages.success) { %>
+    <div class="alert alert-success text-center" role="alert">
+      <%= messages.success %>
+    </div>
+  <% } %>
+  
   <div class="container-fluid mt-5">
     <h1 class="mx-3 my-5 text-primary">Denny's Payroll Data</h1>
     
@@ -72,6 +78,19 @@
 
 
   <!-- Add this script tag at the end of your HTML body -->
+
+  <script>
+    window.onload = function() {
+      // Check if the upload-success div is present
+      if (document.getElementById('upload-success')) {
+        // Hide the spinner animation
+        document.getElementById('spinner-animation').style.display = 'none';
+      } else {
+        // Display the spinner animation
+        document.getElementById('spinner-animation').style.display = 'block';
+      }
+    };
+  </script>
 
   <script>
     $(document).ready(function () {
