@@ -6,24 +6,24 @@ const multer = require('multer');
 const XLSX = require('xlsx');
 const moment = require('moment-timezone');
 const session = require('express-session');
+const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
 const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const XlsxPopulate = require('xlsx-populate');
 const { formatDate } = require('./public/js/custom');
+const User = require('./models/user');
+const pool = require('./db');
 require('dotenv').config(); // Load environment variables from .env file
-
-// Set up MySQL database connection using .env credentials
-const pool = mysql.createPool({
-  host: process.env.AWS_HOST,
-  user: process.env.AWS_USER,
-  password: process.env.AWS_PASS,
-  database: process.env.AWS_NAME,
-  connectionLimit: 10, // Adjust this value based on your needs
-  waitForConnections: true,
-  queueLimit: 0,
-});
 
 // Set up static file serving
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Set up body-parser middleware
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
   res.locals.currentRoute = req.originalUrl;
@@ -33,6 +33,32 @@ app.use((req, res, next) => {
 // Use EJS as the templating engine
 app.set('view engine', 'ejs');
 
+// Set up flash middleware
+app.use(flash());
+
+// Configure Passport.js to use the Local authentication strategy
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    User.findOne({ username: username }, function(err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false, { message: 'Incorrect username.' }); }
+      if (!user.validPassword(password)) { return done(null, false, { message: 'Incorrect password.' }); }
+      return done(null, user);
+    });
+  }
+));
+
+// Serialize and deserialize user objects
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+
 // Set up session middleware
 app.use(session({
   secret: 'mysecret',
@@ -40,8 +66,9 @@ app.use(session({
   saveUninitialized: false
 }));
 
-// Set up flash middleware
-app.use(flash());
+// Initialize Passport and session
+app.use(passport.initialize());
+app.use(passport.session());
 
 const storage = multer.memoryStorage(); // Store the uploaded file in memory
 const upload = multer({ storage: storage });
@@ -50,6 +77,44 @@ const upload = multer({ storage: storage });
 function padZero(number, length) {
   return String(number).padStart(length, '0');
 }
+// Set up login page route
+app.get('/login', function(req, res) {
+  res.locals.currentRoute = req.originalUrl; // Define currentRoute
+  res.render('login', { isLoggedIn: req.isAuthenticated(), error: req.flash('error') });
+});
+
+// Set up login route
+app.post('/login', function(req, res) {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  // Check if username and password are valid
+  if (username === 'myusername' && bcrypt.compareSync(password, hashedPassword)) {
+    // Set user session data
+    req.session.user = {
+      username: username
+    };
+
+    // Redirect to the home page
+    res.redirect('/');
+  } else {
+    // Display error message
+    res.render('login', { error: 'Invalid username or password' });
+  }
+});
+
+// Set up logout route
+app.get('/logout', function(req, res) {
+  // Destroy the user session
+  req.session.destroy(function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      // Redirect to the login page
+      res.redirect('/login');
+    }
+  });
+});
 
 // --------------  Define routes and handlers ----------------------
 

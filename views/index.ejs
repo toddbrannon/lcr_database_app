@@ -1,6 +1,7 @@
 
   <!-- Include the navbar partial -->
-  <%- include ('partials/header') -%>
+  <%- include ('partials/header', { isLoggedIn: isLoggedIn }) -%>
+
   <% if (messages.success) { %>
     <div class="alert alert-success text-center" role="alert">
       <%= messages.success %>
