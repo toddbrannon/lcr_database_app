@@ -99,7 +99,7 @@ app.post('/login', function(req, res) {
     res.redirect('/');
   } else {
     // Display error message
-    res.render('login', { error: 'Invalid username or password' });
+    res.render('login', { isLoggedIn: req.isAuthenticated(), error: 'Invalid username or password' });
   }
 });
 
