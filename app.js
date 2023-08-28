@@ -36,6 +36,13 @@ app.set('view engine', 'ejs');
 // Set up flash middleware
 app.use(flash());
 
+// Set up session middleware
+app.use(session({
+  secret: 'mysecret',
+  resave: false,
+  saveUninitialized: false
+}));
+
 // Configure Passport.js to use the Local authentication strategy
 passport.use(new LocalStrategy(
   function(username, password, done) {
@@ -59,16 +66,11 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-// Set up session middleware
-app.use(session({
-  secret: 'mysecret',
-  resave: false,
-  saveUninitialized: false
-}));
-
 // Initialize Passport and session
 app.use(passport.initialize());
 app.use(passport.session());
+
+
 
 const storage = multer.memoryStorage(); // Store the uploaded file in memory
 const upload = multer({ storage: storage });
