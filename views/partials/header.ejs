@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Database Viewer</title>
+  <!-- Add Bootstrap CSS link -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">LCR Capital</a>
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <% if (isLoggedIn && currentRoute !== '/upload') { %> <!-- Check currentRoute -->
+          <li class="nav-item">
+            <a class="nav-link btn btn-link" href="/upload">Upload</a>
+          </li>
+        <% } %>
+        <% if (isLoggedIn && currentRoute !== '/pivot') { %> <!-- Check currentRoute -->
+          <li class="nav-item">
+            <a class="nav-link btn btn-link" href="/pivot">Report</a>
+          </li>
+        <% } %>
+        <% if (isLoggedIn) { %>
+          <li class="nav-item">
+            <a class="nav-link btn btn-link" href="/admin/users">Admin</a>
+          </li>
+          <li class="nav-item">
+            <form action="/logout" method="post">
+							<button class="nav-link btn btn-link" type="submit">Log out</button>
+						</form>
+          </li>
+        <% } else { %>
+          <!-- Handle the case where the user is not logged in -->
+          <li class="nav-item">
+            <a class="nav-link btn btn-link" href="/login">Log In</a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </nav>
+  
+  

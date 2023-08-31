@@ -1,0 +1,39 @@
+<!-- Include the navbar partial -->
+<%- include ('partials/header', { isLoggedIn: isLoggedIn }) -%>
+
+<% if (isLoggedIn) { %>
+  <p>You are already logged in.</p>
+<% } else { %>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-4 col-md-8 col-sm-10">
+        <div class="card mt-4"> <!-- Added "mt-4" class for top margin -->
+          <div class="card-body">
+            <div class="mb-3"> <!-- Added a wrapper with "mb-3" class -->
+              <form method="post" action="/login/password">
+                <div class="form-group">
+                  <label for="username">Username</label>
+                  <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Log in</button>
+              </form>
+              <% if (hasMessages) { %>
+                <div class="alert alert-danger mt-3" role="alert">
+                  <% messages.forEach(function(message) { %>
+                  <p><%= message %></p>
+                  <% }); %>
+                </div>
+              <% } %>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<% } %>

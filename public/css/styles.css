@@ -1,0 +1,97 @@
+/* Reduce font size for table headers */
+table th {
+    font-size: 70%;
+  }
+  
+  /* Reduce font size for table data */
+  table td {
+    font-size: 70%;
+  }
+
+  table {
+    padding-left: 10px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid black; /* Add border to all sides */
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    border-bottom: 2px solid black; /* Add a thicker border at the bottom of headers */
+}
+
+/* Add styles for specific elements if needed */
+/* .table-bordered {
+    border: 1px solid black;
+} */
+
+.name-column {
+  width: 300px;
+}
+
+/* Remove list-style bullets from navbar items */
+.navbar-nav .nav-item {
+  list-style: none;
+  margin: 0;
+}
+
+/* Navbar link color */
+.navbar-nav .nav-link {
+  color: white;
+  text-decoration: none; /* Remove underline */
+  transition: color 0.3s;
+}
+
+/* Navbar link hover color */
+.navbar-nav .nav-link:hover {
+  color: lightgreen;
+}
+
+/* Navbar link active (click) color */
+.navbar-nav .nav-link:active {
+  color: pink;
+}
+
+.spinner {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.spinner div {
+  position: absolute;
+  top: 27px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #333;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.spinner div:nth-child(1) {
+  left: 6px;
+  animation: spinner 0.6s infinite;
+}
+.spinner div:nth-child(2) {
+  left: 6px;
+  animation: spinner 0.6s infinite;
+}
+.spinner div:nth-child(3) {
+  left: 26px;
+  animation: spinner 0.6s infinite;
+}
+.spinner div:nth-child(4) {
+  left: 45px;
+  animation: spinner 0.6s infinite;
+}
+@keyframes spinner {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
