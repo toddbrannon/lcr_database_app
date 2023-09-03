@@ -18,7 +18,8 @@ UserSchema.pre('save', async function(next) {
     // generate salt
     const salt = await bcrypt.genSalt(10);
     // hash the password
-    const hashedPassword = await bcrypt.hash(this.password, salt);
+    // const hashedPassword = await bcrypt.hash(this.password, salt);
+    const hashedPassword = this.password;
     // replace plain text password with hashed password
     this.password = hashedPassword;
     next();
@@ -29,7 +30,8 @@ UserSchema.pre('save', async function(next) {
 
 UserSchema.methods.matchPassword = async function (password) {
   try {
-    return await bcrypt.compare(password, this.password);
+    return password === this.password;
+    // return await bcrypt.compare(password, this.password);
   } catch (error) {
     throw new Error(error);
   }
