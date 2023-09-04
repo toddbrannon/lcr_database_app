@@ -1,6 +1,7 @@
 const express = require('express');
 const User = require('../models/user.js');
 const router = express.Router();
+const bcrypt = require('bcryptjs');
 
 /**
  * Admin Users page
@@ -82,8 +83,11 @@ router.put('/users/:id', async (req, res) => {
   const id = req.params.id;
   const { username, email_address, password } = req.body;
 
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
   try {
-    const user = await User.findByIdAndUpdate( id, { username, email_address, password });
+    const user = await User.findByIdAndUpdate( id, { username, email_address, password: hashedPassword });
     res.redirect('/admin/users');
   } catch (error) {
     console.error(error);
