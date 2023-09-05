@@ -13,24 +13,29 @@
     <a class="navbar-brand" href="/">LCR Capital</a>
     <div class="collapse navbar-collapse justify-content-end">
       <ul class="navbar-nav">
-        <% if (isLoggedIn && currentRoute !== '/upload') { %> <!-- Check currentRoute -->
+        <% if (isLoggedIn && !currentRoute.startsWith('/admin/')) { %>
+          <!-- Check if the user is logged in, not on the admin view, and has admin privileges -->
+          <li class="nav-item">
+            <a class="nav-link btn btn-link" href="/admin/users">Admin</a>
+          </li>
+        <% } %>
+        <% if (isLoggedIn && currentRoute !== '/upload') { %>
+          <!-- Check currentRoute -->
           <li class="nav-item">
             <a class="nav-link btn btn-link" href="/upload">Upload</a>
           </li>
         <% } %>
-        <% if (isLoggedIn && currentRoute !== '/pivot') { %> <!-- Check currentRoute -->
+        <% if (isLoggedIn && currentRoute !== '/pivot') { %>
+          <!-- Check currentRoute -->
           <li class="nav-item">
             <a class="nav-link btn btn-link" href="/pivot">Report</a>
           </li>
         <% } %>
         <% if (isLoggedIn) { %>
           <li class="nav-item">
-            <a class="nav-link btn btn-link" href="/admin/users">Admin</a>
-          </li>
-          <li class="nav-item">
             <form action="/logout" method="post">
-							<button class="nav-link btn btn-link" type="submit">Log out</button>
-						</form>
+              <button class="nav-link btn btn-link" type="submit">Log out</button>
+            </form>
           </li>
         <% } else { %>
           <!-- Handle the case where the user is not logged in -->
@@ -41,5 +46,6 @@
       </ul>
     </div>
   </nav>
+  
   
   

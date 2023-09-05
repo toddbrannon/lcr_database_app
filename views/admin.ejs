@@ -2,35 +2,48 @@
 <%- include ('partials/header', { isLoggedIn: isLoggedIn }) -%>
 
 <div class="container">
-  <div class="row justify-content-center">
-    <div class="col-lg-8 col-md-8 col-sm-10">
-      <div class="card mt-4"> <!-- Added "mt-4" class for top margin -->
-        <div class="card-body">
-          <h1 class="mb-4">Users</h1>
-          <div class="row">
-            <div class="col-4"><h6>name</h6></div>
-            <div class="col-4"><h6>Email</h6></div>
-            <div class="col-4">
-              <a href="/admin/users/new">New User</a>
+  
+  <div class="row pt-5">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+      <div class="card mt-4">
+        <div class="card-header">
+          <div class="row justify-content-between align-items-center pt-2 px-4">
+            <div class="col-lg-9 col-md-9 col-sm-10">
+              <h1>Current Users</h1>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-2 text-right">
+              <a href="/admin/users/new" class="btn btn-link">New User</a>
             </div>
           </div>
-          <% for(var i=0; i < users.length; i++) { %>
-            <div class="row align-items-center">
-              <div class="col-4"><%= users[i].username %></div>
-              <div class="col-4"><%= users[i].email_address %></div>
-              <div class="col-4 d-flex align-items-center">
-                <div class="">
-                  <a href="/admin/users/<%= users[i]._id %>" class="mr-2">Edit</a>
-                </div>
-                <div class="">
-                  <form action="/users/<%= users[i]._id %>" method="post">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button class="nav-link btn btn-link" type="submit">Delete</button>
-                  </form>
-                </div>                
-              </div>
-            </div>
-          <% } %>
+        </div>
+        
+        <div class="card-body">
+          <table class="table table-bordered">
+            <thead class="thead-light">
+              <tr>
+                <th style="font-size: 1.2rem;">Username</th>
+                <th style="font-size: 1.2rem;">Email</th>
+                <th style="font-size: 1.2rem;">Permission</th>
+                <th style="font-size: 1.2rem;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for(var i=0; i < users.length; i++) { %>
+                <tr>
+                  <td style="font-size: 1.1rem;"><%= users[i].username %></td>
+                  <td style="font-size: 1.1rem;"><%= users[i].email_address %></td>
+                  <td style="font-size: 1.1rem;"><%= users[i].permission %></td>
+                  <td>
+                    <a href="/admin/users/<%= users[i]._id %>" class="btn btn-primary btn-sm mr-2">Edit</a>
+                    <form action="/users/<%= users[i]._id %>" method="post" class="d-inline">
+                      <input type="hidden" name="_method" value="DELETE">
+                      <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

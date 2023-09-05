@@ -176,6 +176,10 @@ function formatDataDateForMySQL(dateValue) {
   }
 }
 
+// Define your migration logic
+
+
+
 // Start the server
 const port = process.env.PORT || 8888;
 app.listen(port, () => {

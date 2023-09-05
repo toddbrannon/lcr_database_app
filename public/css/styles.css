@@ -24,6 +24,11 @@ th {
     border-bottom: 2px solid black; /* Add a thicker border at the bottom of headers */
 }
 
+th.custom-header {
+  background-color: gray;
+  color: white;
+}
+
 /* Add styles for specific elements if needed */
 /* .table-bordered {
     border: 1px solid black;
