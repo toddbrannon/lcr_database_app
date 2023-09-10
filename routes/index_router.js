@@ -6,15 +6,26 @@ module.exports = function(pool, formatDataDate) {
   router.get('/', function(req, res, next) {
     // Check if user is logged in
       if (req.isAuthenticated()) {
+        
+        console.log("USER (router.get('/')): ", req.user);
+        console.log("Is Plain Object:", Object.getPrototypeOf(req.user) === Object.prototype);
+        const plainUser = req.user.toObject();
+        console.log("USER PERMISSION (router.get('/')): ", plainUser.permission)
         // Implement data retrieval from the database and pass it to the 'index.ejs' template for rendering
         const sqlQuery = 'SELECT Co, ID, Name, Department, HireDate, FirstCheckDate, PeriodBegin, PeriodEnd, CheckDate, `E-2RegHours`, `E-3OTHours`, `E-WALIWALI`, `E-WALISALWALISAL`, TotalHours, Location, JobCode, TotalDays, HoursPerDay FROM EmployeeHours';
         //const sqlQuery = 'SELECT * FROM EmployeeHours';
+
+        let columnsFromTable = [];
 
         pool.query(sqlQuery, (err, results) => {
           if (err) {
             console.error('Error fetching data from the database:', err);
             res.status(500).send('Internal Server Error');
             return;
+          }
+
+          if (results.length > 0) {
+            columnsFromTable = Object.keys(results[0]); // Get the column names from the first row
           }
 
           // Convert dates to 'MM/DD/YYYY' format for rendering in HTML
@@ -26,7 +37,17 @@ module.exports = function(pool, formatDataDate) {
             return modifiedRow;
           });
 
-          res.render('index', { req: req, data: dataFromDatabase, formatDate: formatDataDate, isLoggedIn: true, messages: req.flash() });
+          
+          res.render('index', { 
+            req: req, 
+            username: req.user ? req.user.username : null,
+            columns: columnsFromTable,
+            data: dataFromDatabase, 
+            formatDate: formatDataDate, 
+            isLoggedIn: req.isAuthenticated(), 
+            isAdmin: plainUser.permission === 'admin',
+            messages: req.flash()  
+          });
         });
       
       } else {

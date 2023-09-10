@@ -1,5 +1,4 @@
-<!-- Include the navbar partial -->
-<%- include ('partials/header') -%>
+<%- include ('partials/header', { isLoggedIn: isLoggedIn, isAdmin: isAdmin }) -%>
   <h1>Data Uploading...</h1>
   <div class="spinner">
     <div></div>

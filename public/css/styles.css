@@ -1,3 +1,21 @@
+/* Add border to the eye icon in the password input to match the border on the input */
+#togglePassword {
+  border: 1px solid #ced4da;
+  border-left: 0; /* Remove left border */
+  border-radius: 0 .25rem .25rem 0; /* Apply rounded corners to the right side only */
+}
+
+/* Remove the halo effect on the eye icon when it is clicked */
+#togglePassword:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.admin-link {
+  color: #64e6f8;
+}
+
+
 /* Reduce font size for table headers */
 table th {
     font-size: 70%;

@@ -1,5 +1,5 @@
 <!-- Include the navbar partial -->
-<%- include ('partials/header', { isLoggedIn: isLoggedIn }) -%>
+<%- include ('partials/header', { isLoggedIn: isLoggedIn, isAdmin: isAdmin }) -%>
 
 <div class="container">
   
@@ -18,7 +18,7 @@
         </div>
         
         <div class="card-body">
-          <table class="table table-bordered">
+          <table id="datatable" class="table table-bordered">
             <thead class="thead-light">
               <tr>
                 <th style="font-size: 1.2rem;">Username</th>

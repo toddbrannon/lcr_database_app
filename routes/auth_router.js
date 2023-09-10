@@ -31,29 +31,58 @@ passport.use(
 
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
-    cb(null, { id: user.id, username: user.username });
+    cb(null, { id: user.id, username: user.username, permission: user.permission });
   });
 });
 
-passport.deserializeUser(function(user, cb) {
-  process.nextTick(function() {
-    return cb(null, user);
-  });
+// passport.deserializeUser(function(user, cb) {
+//   process.nextTick(function() {
+//     return cb(null, user);
+//   });
+// });
+
+// passport.deserializeUser(function(id, done) {
+//   User.findById(obj.id, 'id username permission')
+//     .then(user => {
+//       done(null, user);
+//     })
+//     .catch(err => {
+//       done(err);
+//     });
+// });
+
+passport.deserializeUser(async function(obj, done) {
+  try {
+    const user = await User.findById(obj.id, 'id username permission');
+    console.log("ID (passport.deserializeUser): ", user.id)
+    console.log("USERNAME (passport.deserializeUser): ", user.username)
+    console.log("PERMISSION (passport.deserializeUser): ", user.permission)
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });
 
 
 // Set up login page route
 router.get('/login', function(req, res, next) {
-  res.render('login', { isLoggedIn: req.isAuthenticated() });
+  res.render('login', { 
+    username: req.user ? req.user.username : null,
+    isLoggedIn: req.isAuthenticated(),
+    isAdmin: req.user ? req.user.permission === 'admin' : false
+  });
 });
 
 router.post('/login/password', passport.authenticate('local-login', {
-  successReturnToOrRedirect: '/admin/users',
+  successReturnToOrRedirect: '/',
   failureRedirect: '/login',
   failureMessage: true
-}));
+}), (req, res) => {
+   console.log('If you see this, authentication was successful');
+   res.redirect('/index');
+});
 
-/* POST /logout
+/* POST /logon
  *
  * This route logs the user out.
  */
@@ -65,7 +94,11 @@ router.post('/logout', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res, next) {
-  res.render('login', { isLoggedIn: req.isAuthenticated() });
+  res.render('login', { 
+    username: req.user ? req.user.username : null,
+    isLoggedIn: req.isAuthenticated(), 
+    isAdmin: req.user.permission === 'admin' 
+  });
 });
 
 module.exports = router;

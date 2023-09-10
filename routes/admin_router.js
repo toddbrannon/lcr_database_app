@@ -7,13 +7,30 @@ const bcrypt = require('bcryptjs');
  * Admin Users page
  */
 router.get('/admin/users', async function(req, res, next) {
+
   if (!req.isAuthenticated()) {
-    return res.redirect('/login');
+    return res.redirect('/');
+  } else { 
+
+  console.log("--------------------------------------------")
+  console.log("USER (router.get('/admin/users')): ", req.user);
+  console.log("Is Plain Object:", Object.getPrototypeOf(req.user) === Object.prototype);
+  const plainUser = req.user.toObject();
+  console.log("USER PERMISSION (router.get('/admin/users')): ", plainUser.permission)
+  console.log("--------------------------------------------")
+
+  if (!req.isAuthenticated() || plainUser.permission !== 'admin') {
+    return res.redirect('/');
   }
   try {
     const users = await User.find();
     // migrateUsers();
-    res.render('admin', { isLoggedIn: req.isAuthenticated(), users });
+    console.log('users: ', users)
+    res.render('admin', { 
+      username: req.user ? req.user.username : null,
+      isLoggedIn: req.isAuthenticated(), 
+      isAdmin: plainUser.permission === 'admin', 
+      users });
 
 
   } catch (error) {
@@ -21,7 +38,7 @@ router.get('/admin/users', async function(req, res, next) {
     res.status(500).send(error);
   }
   
-});
+}});
 
 async function migrateUsers() {
   try {
@@ -46,25 +63,47 @@ async function migrateUsers() {
 
 
 /**
- * Admin Users page
+ * Admin Users page - adding a new user or editing an existing user
  */
 router.get('/admin/users/:id', async function(req, res, next) {
+
   if (!req.isAuthenticated()) {
-    return res.redirect('/login');
+    return res.redirect('/');
+  } else {
+
+  console.log("--------------------------------------------")
+  console.log("USER (router.get('/admin/users/:id')): ", req.user);
+  console.log("Is Plain Object:", Object.getPrototypeOf(req.user) === Object.prototype);
+  const plainUser = req.user.toObject();
+  console.log("USER PERMISSION (router.get('/admin/users/:id')): ", plainUser.permission)
+  console.log("--------------------------------------------")
+
+  if (!req.isAuthenticated() || plainUser.permission !== 'admin') {
+    return res.redirect('/');
   }
+  // adding a new user
   let method = "POST";
   let action = "/users";
   let updateBtn = 'Create';
   let user = null;
   if (req.params.id === 'new') {
   } else {
+    // editing an existing user
     method = "PUT";
     updateBtn = 'Update';
     user = await User.findById(req.params.id);
     action = `/users/${req.params.id}`
   }
-  res.render('user', { isLoggedIn: req.isAuthenticated(), action, method, user, updateBtn, error: req.flash('error') });
-});
+  res.render('user', { 
+    username: req.user ? req.user.username : null,
+    isLoggedIn: req.isAuthenticated(), 
+    isAdmin: plainUser.permission === 'admin', 
+    action, 
+    method, 
+    user, 
+    updateBtn, 
+    error: req.flash('error') });
+}});
 
 // Create a new user
 router.post('/users', async (req, res) => {

@@ -1,6 +1,6 @@
 
   <!-- Include the navbar partial -->
-  <%- include ('partials/header', { isLoggedIn: isLoggedIn }) -%>
+  <%- include ('partials/header', { isLoggedIn: isLoggedIn, isAdmin: isAdmin }) -%>
 
   <% if (messages.success) { %>
     <div class="alert alert-success text-center" role="alert">
@@ -12,68 +12,114 @@
     <h1 class="mx-3 my-5 text-primary">Denny's Payroll Data</h1>
     
     <!-- Table to display data -->
-    <table id="dataTable" class="table table-striped mx-4 mx-lg-1 px-4"> <!-- Adjust mx-1 and mx-4 classes -->
-      <!-- Table header -->
-      <thead>
-        <tr>
-          <th>#</th>
-          <th data-sortable="Co">Co</th>
-          <th data-sortable="ID">ID</th>
-          <th data-sortable="Name">Name</th>
-          <th data-sortable="Department">Department</th>
-          <th data-sortable="Hire Date">Hire Date</th>
-          <th data-sortable="First Check Date">First Check Date</th>
-          <th data-sortable="Period Begin">Period Begin</th>
-          <th data-sortable="Period End">Period End</th>
-          <th data-sortable="Check Date">Check Date</th>
-          <th data-sortable="E-2Reg Hours">E-2Reg Hours</th>
-          <th data-sortable="E-3OT Hours">E-3OT Hours</th>
-          <th data-sortable="E-WALIWALI">E-WALIWALI</th>
-          <th data-sortable="E-WALISALWALISAL">E-WALISALWALISAL</th>
-          <th data-sortable="Total Hours">Total Hours</th>
-          <th data-sortable="Location">Location</th>
-          <th data-sortable="Job Code">Job Code</th>
-          <th data-sortable="Total Days">Total Days</th>
-          <th data-sortable="Hours Per Day">Hours Per Day</th>
-        </tr>
-      </thead>
-      <!-- Table body -->
-      <tbody>
-        <div id="table-body">
-          <% data.forEach((item, index) => { %>
-            <tr>
-              <td><%= index + 1 %></td>
-              <td data-column="Co"><%= item.Co %></td>
-              <td data-column="ID"><%= item.ID %></td>
-              <td data-column="Name"><%= item.Name %></td>
-              <td data-column="Co"><%= item.Department %></td>
-              <td data-column="HireDate"><%= formatDate(item.HireDate, false) %></td>
-              <td data-column="FirstCheckDate"><%= formatDate(item.FirstCheckDate, false) %></td>
-              <td data-column="PeriodBegin"><%= formatDate(item.PeriodBegin, false) %></td>
-              <td data-column="PeriodEnd"><%= formatDate(item.PeriodEnd, false) %></td>
-              <td data-column="CheckDate"><%= formatDate(item.CheckDate, false) %></td>
-              <td data-column="E-2RegHours"><%= item['E-2RegHours'] %></td>
-              <td data-column="E-3OTHours"><%= item['E-3OTHours'] %></td>
-              <td data-column="E-WALIWALI"><%= item['E-WALIWALI'] %></td>
-              <td data-column="E-WALISALWALISAL"><%= item['E-WALISALWALISAL'] %></td>
-              <td data-column="TotalHours"><%= item['TotalHours'] %></td>
-              <td data-column="Location"><%= item['Location'] %></td>
-              <td data-column="JobCode"><%= item['JobCode'] %></td>
-              <td data-column="TotalDays"><%= item['TotalDays'] %></td>
-              <td data-column="HoursPerDay"><%= item['HoursPerDay'] %></td>
-            </tr>
-          <% }); %>
+    <div class="card mt-4">
+      <div class="card-header">
+        <div class="row justify-content-between align-items-center pt-2 px-4">
+          <div class="col-lg-9 col-md-9 col-sm-10">
+            <h1>Payroll Data</h1>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-2 text-right">
+            <!-- <button type="button" class="btn btn-link" data-toggle="modal" data-target="#columnSelectorModal">
+              <i class="fas fa-columns"></i>
+            </button> -->
+          </div>
         </div>
-      </tbody>
-    </table>
+      </div>
+      <div class="card-body">
+        <table id="dataTable" class="table table-bordered mx-4 mx-lg-1 px-4"> <!-- Adjust mx-1 and mx-4 classes -->
+          <!-- Table header -->
+          <thead class="thead-light">
+            <tr>
+              <th>#</th>
+              <th data-sortable="Co">Co</th>
+              <th data-sortable="ID">ID</th>
+              <th data-sortable="Name">Name</th>
+              <th data-sortable="Department">Department</th>
+              <th data-sortable="Hire Date">Hire Date</th>
+              <th data-sortable="First Check Date">First Check Date</th>
+              <th data-sortable="Period Begin">Period Begin</th>
+              <th data-sortable="Period End">Period End</th>
+              <th data-sortable="Check Date">Check Date</th>
+              <th data-sortable="E-2Reg Hours">E-2Reg Hours</th>
+              <th data-sortable="E-3OT Hours">E-3OT Hours</th>
+              <th data-sortable="E-WALIWALI">E-WALIWALI</th>
+              <th data-sortable="E-WALISALWALISAL">E-WALISALWALISAL</th>
+              <th data-sortable="Total Hours">Total Hours</th>
+              <th data-sortable="Location">Location</th>
+              <th data-sortable="Job Code">Job Code</th>
+              <th data-sortable="Total Days">Total Days</th>
+              <th data-sortable="Hours Per Day">Hours Per Day</th>
+            </tr>
+          </thead>
+          <!-- Table body -->
+          <tbody>
+            <div id="table-body">
+              <% data.forEach((item, index) => { %>
+                <tr>
+                  <td><%= index + 1 %></td>
+                  <td data-column="Co"><%= item.Co %></td>
+                  <td data-column="ID"><%= item.ID %></td>
+                  <td data-column="Name"><%= item.Name %></td>
+                  <td data-column="Co"><%= item.Department %></td>
+                  <td data-column="HireDate"><%= formatDate(item.HireDate, false) %></td>
+                  <td data-column="FirstCheckDate"><%= formatDate(item.FirstCheckDate, false) %></td>
+                  <td data-column="PeriodBegin"><%= formatDate(item.PeriodBegin, false) %></td>
+                  <td data-column="PeriodEnd"><%= formatDate(item.PeriodEnd, false) %></td>
+                  <td data-column="CheckDate"><%= formatDate(item.CheckDate, false) %></td>
+                  <td data-column="E-2RegHours"><%= item['E-2RegHours'] %></td>
+                  <td data-column="E-3OTHours"><%= item['E-3OTHours'] %></td>
+                  <td data-column="E-WALIWALI"><%= item['E-WALIWALI'] %></td>
+                  <td data-column="E-WALISALWALISAL"><%= item['E-WALISALWALISAL'] %></td>
+                  <td data-column="TotalHours"><%= item['TotalHours'] %></td>
+                  <td data-column="Location"><%= item['Location'] %></td>
+                  <td data-column="JobCode"><%= item['JobCode'] %></td>
+                  <td data-column="TotalDays"><%= item['TotalDays'] %></td>
+                  <td data-column="HoursPerDay"><%= item['HoursPerDay'] %></td>
+                </tr>
+              <% }); %>
+            </div>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="columnSelectorModal" tabindex="-1" role="dialog" aria-labelledby="columnSelectorModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="columnSelectorModalLabel">Select Columns</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Select All Checkbox -->
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="selectAll">
+              <label class="form-check-label" for="selectAll">Select All</label>
+            </div>
+            <!-- Individual Column Checkboxes generated dynamically -->
+            <% columns.forEach((column) => { %>
+              <div class="form-check">
+                <input class="form-check-input column-checkbox" type="checkbox" id="<%= column %>" checked>
+                <label class="form-check-label" for="<%= column %>"><%= column %></label>
+              </div>
+            <% }); %>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button id="save-changes-button" type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>  
   </div>
   <!-- Add Bootstrap JS link and your custom JavaScript file link -->
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="/js/custom.js"></script>
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
 
@@ -106,7 +152,63 @@
       });
     });
   </script>
-  
+
+  <script>
+  // Additional JavaScript to handle checkbox selection
+  $(document).ready(function() {
+    // Code for handling DataTable initialization and other features
+    // ...
+
+    // Select All functionality
+    $('#selectAll').click(function() {
+      $('.column-checkbox').prop('checked', $(this).prop('checked'));
+    });
+
+    // Uncheck 'Select All' if an individual checkbox is unchecked
+    $('.column-checkbox').click(function() {
+      if (!$(this).prop('checked')) {
+        $('#selectAll').prop('checked', false);
+      }
+    });
+  });
+  </script>
+
+  <!-- Handle the `Save changes` button click in the columns modal -->
+  <script>
+    $(document).ready(function() {
+      $('#save-changes-button').click(function() {
+        console.log('Save button clicked');
+        
+        // Capture all checkboxes that are checked
+        const checkedBoxes = $('.column-checkbox:checked');
+        
+        // Extract the column names from checked boxes
+        const selectedColumns = Array.from(checkedBoxes).map(function(checkbox) {
+          return checkbox.id; // Assuming the ID of each checkbox is the column name
+        });
+        
+        // Do something with the selected columns (e.g., store them, make an AJAX request, etc.)
+        console.log('Selected Columns:', selectedColumns);
+
+        // Hide all columns initially
+        $('td[data-column]').hide();
+        $('th[data-sortable]').hide();
+
+        // Show only the selected columns
+        selectedColumns.forEach(function(column) {
+          $(`td[data-column="${column}"]`).show();
+          $(`th[data-sortable="${column}"]`).show();
+        });
+        
+        // Optionally close the modal if you wish
+        $('#columnSelectorModal').modal('hide');  // Using the correct ID for the modal here
+      });
+      // Code to show all columns initially when the page loads
+      $('td[data-column]').show();
+      $('th[data-sortable]').show();
+    });
+    
+  </script>
   
 </body>
 

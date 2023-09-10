@@ -8,7 +8,7 @@ const UserSchema = new Schema({
   email_address: String,
   username: String,
   password: String,
-  permission: String,
+  permission: { type: String, default: 'general' } 
 });
 
 UserSchema.pre('save', async function(next) {

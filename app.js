@@ -12,9 +12,11 @@ const bcrypt = require('bcrypt');
 const flash = require('connect-flash');
 const passport = require('passport');
 const mongoose = require('mongoose');
+require('./models/user');  // Ensure this line comes before you use the User model
 const XlsxPopulate = require('xlsx-populate');
 const { formatDate } = require('./public/js/custom');
 const pool = require('./db');
+
 require('dotenv').config(); // Load environment variables from .env file
 
 // Set up static file serving
@@ -59,6 +61,10 @@ app.use(session({
   saveUninitialized: false
 }));
 
+// Initialize Passport and session
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(passport.authenticate('session'));
 app.use(function(req, res, next) {
   var msgs = req.session.messages || [];
@@ -67,10 +73,6 @@ app.use(function(req, res, next) {
   req.session.messages = [];
   next();
 });
-
-// Initialize Passport and session
-app.use(passport.initialize());
-app.use(passport.session());
 
 const storage = multer.memoryStorage(); // Store the uploaded file in memory
 const upload = multer({ storage: storage });
