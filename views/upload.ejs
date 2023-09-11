@@ -14,6 +14,12 @@
     <% if (message) { %>
       <p><%= message %></p>
     <% } %>
+    <% if (messages.error) { %>
+      <div class="alert alert-danger mt-4">
+        <%= messages.error %>
+      </div>
+    <% } %>
+    
   </div>
 </body>
 </html>

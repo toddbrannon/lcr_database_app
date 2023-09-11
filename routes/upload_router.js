@@ -29,12 +29,14 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
     router.post('/upload', upload.single('file'), async (req, res) => {
       // Check if a file was uploaded
       if (!req.file) {
-        return res.status(400).send('No file uploaded.');
+        req.flash('error', 'No file selected');
+        return res.redirect('/upload'); // Redirect to the page where the form is
       }
     
       // Validate file format (should be .xlsx)
       if (req.file.mimetype !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-        return res.status(400).send('Invalid file format. Please upload an .xlsx file.');
+        req.flash('error', 'Invalid file format. Please ensure you are selecting an Excel spreadsheet file (xlsx) and try again.');
+        return res.redirect('/upload'); // Redirect to the page where the form is
       }
     
       // Define expected column names and datatypes

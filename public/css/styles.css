@@ -56,6 +56,25 @@ th.custom-header {
   width: 300px;
 }
 
+.navbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.center-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.absolute-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10; /* Adjust if needed */
+}
+
 /* Remove list-style bullets from navbar items */
 .navbar-nav .nav-item {
   list-style: none;
