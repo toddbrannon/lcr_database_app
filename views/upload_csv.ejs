@@ -1,0 +1,25 @@
+
+  <!-- Include the navbar partial -->
+  <%- include ('partials/header', { isLoggedIn: isLoggedIn, isAdmin: isAdmin }) -%>
+
+  <div class="container mt-5">
+    <h2>Upload Files</h2>
+    <form action="/upload_csv" method="POST" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="file">Select a file (must be csv):</label>
+        <input type="file" class="form-control" id="file" name="file">
+      </div>
+      <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+    <% if (message) { %>
+      <p><%= message %></p>
+    <% } %>
+    <% if (messages.error) { %>
+      <div class="alert alert-danger mt-4">
+        <%= messages.error %>
+      </div>
+    <% } %>
+    
+  </div>
+</body>
+</html>

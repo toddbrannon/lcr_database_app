@@ -16,6 +16,7 @@ require('./models/user');  // Ensure this line comes before you use the User mod
 const XlsxPopulate = require('xlsx-populate');
 const { formatDate } = require('./public/js/custom');
 const pool = require('./db');
+const { spawn } = require('child_process');
 
 require('dotenv').config(); // Load environment variables from .env file
 
@@ -90,6 +91,8 @@ const adminRouter = require('./routes/admin_router');
 const indexRouter = require('./routes/index_router')(pool, formatDataDate); // Pass the pool instance
 const pivotRouter = require('./routes/pivot_router')(pool);
 const uploadRouter = require('./routes/upload_router')(pool, storage, upload, formatDataDateForMySQL);
+const uploadCsvRouter = require('./routes/upload_csv_router')(pool, storage, upload, formatDataDateForMySQL);
+
 
 // Use route modules
 app.use('/', indexRouter);
@@ -97,6 +100,7 @@ app.use('/', adminRouter);
 app.use('/', authRouter);
 app.use('/', pivotRouter);
 app.use('/', uploadRouter);
+app.use('/', uploadCsvRouter);
 
 // Function to format date strings or Excel serial dates to MySQL date format (YYYY-MM-DD)
 // Function to format date strings or Excel serial dates to MySQL date format (YYYY-MM-DD)

@@ -2,7 +2,7 @@ const express = require('express');
 const XLSX = require('xlsx');
 const router = express.Router();
 
-// GET Root Route
+// GET Upload Route
 module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
     router.get('/upload', (req, res) => {
       
