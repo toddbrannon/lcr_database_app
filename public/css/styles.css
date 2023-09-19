@@ -11,6 +11,10 @@
   box-shadow: none;
 }
 
+.custom-file-input {
+  margin-bottom: 10px;
+}
+
 .admin-link {
   color: #64e6f8;
 }

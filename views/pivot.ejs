@@ -1,21 +1,21 @@
   <!-- Include the navbar partial -->
   <%- include ('partials/header', { isLoggedIn: isLoggedIn, isAdmin: isAdmin }) -%>
 
-  <div class="container-fluid mt-5">
-    <h1 class="mx-4 mt-5 mb-3 text-primary">Employee Hours Report</h1>
+  <div class="container-fluid mt-5 mb-5 pb-5">
+    <h1 class="mx-4 mt-5 mb-3">Employee Hours Report</h1>
 
     <form action="/pivot" method="GET">
-        <label class = "text-primary mx-4" for="citySelect">Select City:</label>
-        <select name="city" id="citySelect">
+        <label class = "text-info mx-4 pl-2" for="citySelect">Select City:</label>
+        <select name="city" id="citySelect" class="py-1 pr-2 pl-2">
             <option value="Lahaina">Lahaina</option>
             <option value="Puyallup">Puyallup</option>
             <!-- Add more options based on your cities -->
         </select>
-        <button type="submit">Filter</button>
+        <button type="submit" class="btn btn-info btn-sm mb-1">Filter</button>
     </form>
 
     <% for (const jobDesc of jobDescriptions) { %>
-        <h5 class="mt-2 mx-4"><%= jobDesc %></h5>
+        <h5 class="mt-2 mx-4 text-secondary"><%= jobDesc %></h5>
         <table id="dataTable" class="table table-striped mx-4 mx-lg-1 px-4 table-bordered">
             <thead>
                 <tr>

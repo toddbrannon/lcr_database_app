@@ -90,6 +90,8 @@ const authRouter = require('./routes/auth_router');
 const adminRouter = require('./routes/admin_router');
 const indexRouter = require('./routes/index_router')(pool, formatDataDate); // Pass the pool instance
 const pivotRouter = require('./routes/pivot_router')(pool);
+const locationRouter = require('./routes/locations_router')(pool);
+const jobcodesRouter = require('./routes/jobcodes_router')(pool);
 const uploadRouter = require('./routes/upload_router')(pool, storage, upload, formatDataDateForMySQL);
 const uploadCsvRouter = require('./routes/upload_csv_router')(pool, storage, upload, formatDataDateForMySQL);
 
@@ -100,7 +102,8 @@ app.use('/', adminRouter);
 app.use('/', authRouter);
 app.use('/', pivotRouter);
 app.use('/', uploadRouter);
-app.use('/', uploadRouter);
+app.use('/', locationRouter);
+app.use('/', jobcodesRouter);
 
 // Function to format date strings or Excel serial dates to MySQL date format (YYYY-MM-DD)
 // Function to format date strings or Excel serial dates to MySQL date format (YYYY-MM-DD)

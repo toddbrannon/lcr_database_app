@@ -50,13 +50,13 @@
             <a class="nav-link btn btn-link admin-link" style="color: #64e6f8;" href="/admin/users">Manage Users</a>
           </li>
         <% } %>
-        <% if (isLoggedIn && currentRoute !== '/upload_csv') { %>
+        <% if (isLoggedIn && currentRoute !== '/upload') { %>
           <!-- Check currentRoute -->
           <li class="nav-item">
             <a class="nav-link btn btn-link" href="/upload">Upload</a>
           </li>
         <% } %>
-        <% if (isLoggedIn && currentRoute !== '/pivot') { %>
+        <% if (isLoggedIn && !currentRoute.startsWith('/pivot')) { %>
           <!-- Check currentRoute -->
           <li class="nav-item">
             <a class="nav-link btn btn-link" href="/pivot">Report</a>
