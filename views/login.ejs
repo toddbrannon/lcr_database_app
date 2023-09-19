@@ -3,11 +3,17 @@
 <% if (isLoggedIn) { %>
   <p>You are already logged in.</p>
 <% } else { %>
-  <div class="container">
-    <div class="row justify-content-center">
+  <div class="container container-login">
+    <div class="row justify-content-center mt-5">
       <div class="col-lg-4 col-md-8 col-sm-10">
-        <div class="card mt-4"> <!-- Added "mt-4" class for top margin -->
-          <div class="card-body">
+        <div class="card card-login mt-4"> <!-- Added "mt-4" class for top margin -->
+          <div class="image-container mx-auto mt-5 mb-4">
+            <img src="/assets/LCR_logo.png" alt="Logo">
+          </div>
+          <div class="form-header mx-auto">
+            <h3>User Login</h3>
+          </div>
+          <div class="card-body card-body-login">
             <div class="mb-3"> <!-- Added a wrapper with "mb-3" class -->
               <form method="post" action="/login/password">
                 <div class="form-group">
@@ -30,7 +36,10 @@
                   </div>
                 </div>
                 
-                <button type="submit" class="btn btn-primary btn-block">Log in</button>
+                <button type="submit" class="btn btn-primary btn-login btn-block">Log in</button>
+                <div class="forgot-password mt-4"">
+                  <a href="/forgot_password" class="forgot-password-link">Reset password</a>
+                </div>
               </form>
               <% if (hasMessages) { %>
                 <div class="alert alert-danger mt-3" role="alert">
@@ -65,9 +74,5 @@
   
 <% } %>
 
-</body>
-
-
-</body>
 </body>
 </html>

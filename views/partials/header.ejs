@@ -8,23 +8,27 @@
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 
+  <% if (isLoggedIn && currentRoute !== '/dashboard') { %>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div style="flex-grow: 1;">
-      <a class="navbar-brand" href="/">LCR Capital</a>
+      <a class="navbar-brand" href="/dashboard">LCR Capital</a>
     </div>
     
     <!-- Username centered on all screens other than mobile -->
+    <% if (isLoggedIn && currentRoute !== '/') { %>
     <div class="d-none d-lg-flex absolute-center">
       <% if (isLoggedIn) { %>
         <span class="navbar-text" style="color: #CDF281">
-          Welcome, <%= username %>
+          Logged in as <%= username %>
         </span>
       <% } %>
     </div>
+    <% } %>
 
     <!-- Toggler Button -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,13 +47,13 @@
         <% if (isLoggedIn && isAdmin && !currentRoute.startsWith('/admin/')) { %>
           <!-- Check if the user is logged in, not on the admin view, and has admin privileges -->
           <li class="nav-item">
-            <a class="nav-link btn btn-link admin-link" style="color: #64e6f8;" href="/admin/users">Admin</a>
+            <a class="nav-link btn btn-link admin-link" style="color: #64e6f8;" href="/admin/users">Manage Users</a>
           </li>
         <% } %>
         <% if (isLoggedIn && currentRoute !== '/upload_csv') { %>
           <!-- Check currentRoute -->
           <li class="nav-item">
-            <a class="nav-link btn btn-link" href="/upload_csv">Upload</a>
+            <a class="nav-link btn btn-link" href="/upload">Upload</a>
           </li>
         <% } %>
         <% if (isLoggedIn && currentRoute !== '/pivot') { %>
@@ -70,6 +74,7 @@
     
     
   </nav>
+  <% } %>
 
   <!-- Add jQuery and Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>

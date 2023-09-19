@@ -108,7 +108,7 @@ router.get('/admin/users/:id', async function(req, res, next) {
 // Create a new user
 router.post('/users', async (req, res) => {
   
-  const { username, email_address, password, permission, method } = req.body;
+  const { firstname, lastname, username, email_address, password, permission, method } = req.body;
   try {
     const isNameExist = await User.find({username})
     if (isNameExist && isNameExist.length > 0) {
@@ -132,7 +132,7 @@ router.post('/users', async (req, res) => {
   }
 
   try {
-    const user = new User({ username, email_address, password, permission });
+    const user = new User({ firstname, lastname, username, email_address, password, permission });
     console.log('user: ', user);
     await user.save();
     res.redirect('/admin/users');
@@ -145,7 +145,7 @@ router.post('/users', async (req, res) => {
 // Update a user
 router.put('/users/:id', async (req, res) => {
   const id = req.params.id;
-  const { username, email_address, password, permission } = req.body;
+  const { firstname, lastname, username, email_address, password, permission, dateadded } = req.body;
   
   
 
@@ -154,7 +154,7 @@ router.put('/users/:id', async (req, res) => {
 
   try {
     console.log('req.body: ', req.body);
-    const user = await User.findByIdAndUpdate( id, { username, email_address, permission, password: hashedPassword });
+    const user = await User.findByIdAndUpdate( id, { firstname, lastname, username, email_address, permission, password: hashedPassword });
     res.redirect('/admin/users');
   } catch (error) {
     console.error(error);

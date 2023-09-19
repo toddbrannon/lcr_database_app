@@ -37,10 +37,15 @@ module.exports = function(pool, formatDataDate) {
             return modifiedRow;
           });
 
-          
+          console.log("req.user:", req.user);
+          console.log("plainUser:", plainUser)
+          console.log("req.user.firstname:", plainUser ? plainUser.firstname : 'Not available');
+       
           res.render('index', { 
             req: req, 
             username: req.user ? req.user.username : null,
+            firstname: req.user ? req.user.firstname : null,
+            lastname: req.user ? req.user.lastname : null,
             columns: columnsFromTable,
             data: dataFromDatabase, 
             formatDate: formatDataDate, 
@@ -55,5 +60,23 @@ module.exports = function(pool, formatDataDate) {
         res.redirect('/login');
       }
   });
+
+  router.get('/dashboard', function(req, res, next) {
+    if (req.isAuthenticated()) {
+      const plainUser = req.user.toObject();
+      res.render('dashboard', { 
+            req: req, 
+            username: req.user ? req.user.username : null,
+            firstname: req.user ? req.user.firstname : null,
+            lastname: req.user ? req.user.lastname : null,
+            isLoggedIn: req.isAuthenticated(), 
+            isAdmin: plainUser.permission === 'admin',
+            messages: req.flash()  
+          });
+        } else {
+          // Redirect to the login page
+          res.redirect('/login');
+        }
+    });
   return router;
 }

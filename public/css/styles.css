@@ -15,6 +15,33 @@
   color: #64e6f8;
 }
 
+.card-login {
+  background-color: aliceblue;
+}
+
+.forgot-password {
+  text-align: center;
+}
+
+.btn-login {
+  background-color: #1A60AC;
+  border-color:#1A60AC;
+}
+
+.btn-send-link {
+  background-color: #1A60AC;
+  border-color:#1A60AC;
+}
+
+.dashboard-logout {
+  background-color: lightgray;
+  border-color: lightgray;
+}
+
+.dashboard-logout:hover {
+  background-color: darkgray;
+  border-color: darkgray;
+}
 
 /* Reduce font size for table headers */
 table th {
@@ -54,25 +81,6 @@ th.custom-header {
 
 .name-column {
   width: 300px;
-}
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
-}
-
-.center-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.absolute-center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10; /* Adjust if needed */
 }
 
 /* Remove list-style bullets from navbar items */

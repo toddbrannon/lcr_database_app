@@ -8,7 +8,16 @@ const UserSchema = new Schema({
   email_address: String,
   username: String,
   password: String,
-  permission: { type: String, default: 'general' } 
+  firstname: String,
+  lastname: String,
+  dateadded: {
+    type: Date,
+    default: Date.now 
+  },// This will automatically set the current date and time
+  permission: { 
+    type: String, 
+    default: 'general'
+  } 
 });
 
 UserSchema.pre('save', async function(next) {

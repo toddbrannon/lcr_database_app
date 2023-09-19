@@ -1,45 +1,46 @@
 import pandas as pd
+import json
+import sys  # Import the sys module
+
+
+def clean_header(header):
+    """
+    Clean up the header name by removing spaces, line breaks, and special characters.
+    """
+    return header.strip().replace(" ", "_").replace("\n", "")
+
 
 def load_custom_csv_with_columns(file_path, column_names, skip_rows=4):
     """
     Load a custom-formatted CSV file into a Pandas DataFrame with manually set column names.
-
-    Parameters:
-        file_path (str): The path to the CSV file.
-        column_names (list): List of column names to set in the DataFrame.
-        skip_rows (int): The number of rows to skip at the start of the file.
-
-    Returns:
-        pd.DataFrame: A Pandas DataFrame containing the loaded data.
     """
     df = pd.read_csv(file_path, skiprows=skip_rows, names=column_names)
+
+    # Clean up the column names
+    df.columns = [clean_header(col) for col in df.columns]
+
     return df
 
 
-# Manually set column names
-manual_column_names = [
-    'Company_ID', 'Employee_ID', 'Employee_Name', 'Department_ID',
-    'Hire_Date', 'First_Check_Date', 'Period_Begin', 'Period_End',
-    'Check_Date', 'Regular_Hours', 'OT_Hours', 'WALISal'
-]
+if __name__ == '__main__':
+    # Manually set column names
+    manual_column_names = [
+        'Co', 'ID', 'Name', 'Department', 'HireDate', 'FirstCheckDate', 'PeriodBegin', 'PeriodEnd',
+        'CheckDate', 'E-2RegHours', 'E-3OTHours', 'E-WALIWALI', 'E-WALISALWALISAL'
+    ]
 
-# Manually set composite column names based on metadata
-manual_composite_names = {
-    'Regular_Hours': 'E-2 Reg Hrs',
-    'OT_Hours': 'E-3 OT Hrs',
-    'WALISal': 'E-WALISal WALISal'
-}
+    # Read the file path from command-line arguments
+    if len(sys.argv) > 1:
+        file_path = sys.argv[1]
+    else:
+        print("No file path provided.")
+        sys.exit(1)
 
-# Update the manual_column_names list
-for col, new_name in manual_composite_names.items():
-    index = manual_column_names.index(col)
-    manual_column_names[index] = new_name
+    # Load the data
+    df = load_custom_csv_with_columns(file_path, manual_column_names)
 
-# File path
-file_path = '/Volumes/LaCie/Clients/LCR Capital/LCR_data_files/Alahaina, LLC_39890_end date 02.01.2023.xlsx - Sheet1.csv'
+    # Convert the DataFrame to JSON
+    json_output = df.to_json(orient='records')
 
-# Load the data
-df = load_custom_csv_with_columns(file_path, manual_column_names)
-
-# Do something with the DataFrame
-print(df.head())
+    # Output the JSON string
+    print(json_output)

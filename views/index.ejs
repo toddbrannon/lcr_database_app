@@ -9,20 +9,28 @@
   <% } %>
   
   <div class="container-fluid mt-5">
-    <h1 class="mx-3 my-5 text-primary">Denny's Payroll Data</h1>
+    <!-- <h1 class="mx-3 my-5 text-primary">Denny's Payroll Data</h1> -->
     
     <!-- Table to display data -->
     <div class="card mt-4">
       <div class="card-header">
         <div class="row justify-content-between align-items-center pt-2 px-4">
-          <div class="col-lg-9 col-md-9 col-sm-10">
+          <div class="col-auto">
             <h1>Payroll Data</h1>
           </div>
-          <div class="col-lg-3 col-md-3 col-sm-2 text-right">
-            <!-- <button type="button" class="btn btn-link" data-toggle="modal" data-target="#columnSelectorModal">
-              <i class="fas fa-columns"></i>
-            </button> -->
+          <!-- Empty div to push the text to the far right -->
+          <div class="col">
           </div>
+          <!-- H1 text and Log Out button on the far right -->
+          <% if (isLoggedIn && isAdmin && !currentRoute.startsWith('/admin/')) { %>
+          <div class="col-auto text-right">
+            
+              <a href="/pivot" class="btn btn-info" style="width: 200px;">Manage Locations</a>
+            
+              <a href="/upload" class="btn btn-info" style="width: 200px;">Manage Job Codes</a>
+            
+          </div>
+          <% } %>
         </div>
       </div>
       <div class="card-body">

@@ -1,0 +1,60 @@
+
+<!-- Include the navbar partial -->
+<%- include ('partials/header', { isLoggedIn: isLoggedIn, isAdmin: isAdmin }) -%>
+
+<div class="container mt-5">
+  <div class="row pt-5">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+      <div class="card mt-4">
+        <div class="card-header">
+          <div class="row align-items-center pt-2 px-4">
+            <!-- Logo on the far left -->
+            <div class="col-auto">
+              <img src="/assets/LCR_logo.png" alt="Logo">
+            </div>
+            <!-- Empty div to push the text to the far right -->
+            <div class="col">
+            </div>
+            <!-- H1 text and Log Out button on the far right -->
+            <div class="col-auto text-right">
+              <div>
+                <% if (isLoggedIn) { %>
+                  <h3>Welcome back, <strong><%= firstname %> <%= lastname %></strong></h3>
+                  <!-- Log Out button -->
+                  <form action="/logout" method="post">
+                    <button class="btn dashboard-logout" type="submit">Log Out</button>
+                  </form>
+                <% } else { %>
+                  <h3>Welcome to Our Platform</h3>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        
+        <div class="card-body">
+          <p class="lead">Select an option to proceed:</p>
+          <div class="row justify-content-center">
+            <div class="col-auto mr-5">
+              <a href="/" class="btn btn-secondary" style="width: 200px;">Data</a>
+            </div>
+            <div class="col-auto mr-5">
+              <a href="/pivot" class="btn btn-secondary" style="width: 200px;">Reports</a>
+            </div>
+            <div class="col-auto mr-5">
+              <a href="/upload" class="btn btn-secondary" style="width: 200px;">Upload</a>
+            </div>
+            <% if (isAdmin) { %>
+              <div class="col-auto">
+                <a href="/admin/users" class="btn btn-info" style="width: 200px;">Users</a>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

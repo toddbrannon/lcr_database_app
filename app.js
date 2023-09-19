@@ -100,7 +100,7 @@ app.use('/', adminRouter);
 app.use('/', authRouter);
 app.use('/', pivotRouter);
 app.use('/', uploadRouter);
-app.use('/', uploadCsvRouter);
+app.use('/', uploadRouter);
 
 // Function to format date strings or Excel serial dates to MySQL date format (YYYY-MM-DD)
 // Function to format date strings or Excel serial dates to MySQL date format (YYYY-MM-DD)

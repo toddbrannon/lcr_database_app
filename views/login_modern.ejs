@@ -1,0 +1,43 @@
+<%- include ('partials/header', { isLoggedIn: isLoggedIn, isAdmin: isAdmin }) -%>
+
+<% if (isLoggedIn) { %>
+  <p>You are already logged in.</p>
+<% } else { %>
+<div class="container-centered">
+  <div class="container">
+    <!-- <div class="design">
+        <div class="pill-1 rotate-45"></div>
+        <div class="pill-2 rotate-45"></div>
+        <div class="pill-3 rotate-45"></div>
+        <div class="pill-4 rotate-45"></div>
+    </div> -->
+
+    <div class="design py-6">
+      <img src="/assets/LCR_logo.png" alt="logo">
+    </div>
+
+    <form class="login" method="post" action="/login/password">
+        <h3 class="title">User Login</h3>
+        <div class="text-input">
+            <i class="ri-user-fill"></i>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+        </div>
+        <div class="text-input">
+            <i class="ri-lock-fill"></i>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>        
+        </div>
+        <button type="submit" class="btn login-btn">LOGIN</button>
+        <a href="#" class="forgot">Forgot Username/Password?</a>
+        <!-- <div class="create">
+            <a href="#">Create Your Account</a>
+            <i class="ri-arrow-right-fill"></i>
+        </div> -->
+      </div>
+    </form>
+</div>
+</div>
+  
+<% } %>
+
+</body>
+</html>

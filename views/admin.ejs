@@ -12,7 +12,8 @@
               <h1>Current Users</h1>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-2 text-right">
-              <a href="/admin/users/new" class="btn btn-link">New User</a>
+              <!-- <a href="/admin/users/new" class="btn btn-link">Add a user</a> -->
+              <a href="/admin/users/new" class="btn btn-info btn-sm mr-2">Add User</a>
             </div>
           </div>
         </div>
@@ -21,18 +22,31 @@
           <table id="datatable" class="table table-bordered">
             <thead class="thead-light">
               <tr>
+                <th style="font-size: 1.2rem;">First Name</th>
+                <th style="font-size: 1.2rem;">Last Name</th>
                 <th style="font-size: 1.2rem;">Username</th>
                 <th style="font-size: 1.2rem;">Email</th>
                 <th style="font-size: 1.2rem;">Permission</th>
+                <th style="font-size: 1.2rem;">Added</th>
                 <th style="font-size: 1.2rem;">Action</th>
+
               </tr>
             </thead>
             <tbody>
               <% for(var i=0; i < users.length; i++) { %>
                 <tr>
+                  <td style="font-size: 1.1rem;"><%= users[i].firstname %></td>
+                  <td style="font-size: 1.1rem;"><%= users[i].lastname %></td>
                   <td style="font-size: 1.1rem;"><%= users[i].username %></td>
                   <td style="font-size: 1.1rem;"><%= users[i].email_address %></td>
                   <td style="font-size: 1.1rem;"><%= users[i].permission %></td>
+                  <td style="font-size: 1.1rem;">
+                    <% 
+                      const date = new Date(users[i].dateadded);
+                      const formattedDate = (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear();
+                    %>
+                    <%= formattedDate %>
+                  </td>
                   <td>
                     <a href="/admin/users/<%= users[i]._id %>" class="btn btn-primary btn-sm mr-2">Edit</a>
                     <form action="/users/<%= users[i]._id %>" method="post" class="d-inline">
