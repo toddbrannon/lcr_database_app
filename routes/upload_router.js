@@ -43,38 +43,50 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
     }
 
     const expectedColumns = [
-      'Co', 'ID', 'Name', 'Department', 'HireDate', 'FirstCheckDate', 'PeriodBegin', 'PeriodEnd',
-      'CheckDate', 'E-2RegHours', 'E-3OTHours', 'E-WALIWALI', 'E-WALISALWALISAL'
-    ];
+      'Co', 'ID', 'Name', 'Department', 'Hire Date', 'Period Begin', 'Period End',
+      'Check Date', 'E-2 Reg Hrs', 'E-3 OT Hrs', 'E-WALI WALI', 'E-WALISal WALISal'
+    ];    
+
     const columnDataTypes = {
       'Co': 'number', 'ID': 'number', 'Name': 'string', 'Department': 'string',
-      'HireDate': 'date', 'FirstCheckDate': 'date', 'PeriodBegin': 'date', 'PeriodEnd': 'date',
-      'CheckDate': 'date', 'E-2RegHours': 'number', 'E-3OTHours': 'number',
-      'E-WALIWALI': 'number', 'E-WALISALWALISAL': 'number'
+      'Hire Date': 'date', 'Period Begin': 'date', 'Period End': 'date',
+      'Check Date': 'date', 'E-2 Reg Hrs': 'number', 'E-3 OT Hrs': 'number',
+      'E-WALI WALI': 'number', 'E-WALISal WALISal': 'number'
     };
+    
 
     if (req.file.mimetype === 'text/csv') {
       const csvData = req.file.buffer.toString('utf8');
-      Papa.parse(csvData, {
+      // Split the CSV data into individual lines
+      const lines = csvData.split('\n');
+      // Remove the first four lines
+      const dataToParse = lines.slice(2).join('\n');
+      Papa.parse(dataToParse, {
         header: true,
         dynamicTyping: true,
         skipEmptyLines: true,
         complete: async function(results) {
+
           console.log("DataFrame/Data Structure:", results.data);
           const tempFilePath = './temp.csv';
           fs.writeFileSync(tempFilePath, req.file.buffer);
 
           const runPythonScript = new Promise((resolve, reject) => {
+            console.log("Running Python script...");
             const pythonProcess = spawn('/Users/toddbrannon/.local/share/virtualenvs/Express-PassportJs-BzwaXHEA/bin/python', ['process_csv.py', tempFilePath]);
             let jsonOutput = '';
 
+            console.log("Python Process:", pythonProcess);
             pythonProcess.stdout.on('data', (data) => {
-              jsonOutput += data.toString();
+              const output = data.toString();
+              console.log('Python Output:', output);
+              jsonOutput += output;
             });
-
+          
             pythonProcess.stderr.on('data', (data) => {
-              console.error(`Python Error: ${data}`);
+              console.error('Python Error:', data.toString());
             });
+          
 
             pythonProcess.on('close', (code) => {
               if (code !== 0) {
@@ -138,11 +150,13 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
 
     const insertDataIntoDatabase = async (data) => {
       const insertQuery = 'INSERT INTO EmployeeHours SET ?';
+      
       return new Promise((resolve, reject) => {
         let numInserted = 0;
         data.forEach(entry => {
           // List of date fields to format
-          const dateFields = ['CheckDate', 'HireDate', 'FirstCheckDate', 'PeriodBegin', 'PeriodEnd'];
+          
+          const dateFields = ['CheckDate', 'HireDate', 'PeriodBegin', 'PeriodEnd'];
     
           dateFields.forEach(field => {
             if (entry[field]) {
@@ -152,17 +166,19 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
           });
     
           pool.query(insertQuery, entry, (err, result) => {
+            console.log('Executing Query:', insertQuery, entry);
             if (err) {
-              console.error('Error inserting data into the database:', err);
-              reject(err);
+                console.error('Database Error:', err.code, err.sqlMessage);
+                console.error('Failed Entry:', entry);
+                reject(err);
             } else {
-              console.log('Data inserted successfully:', result);
-              numInserted++;
-              if (numInserted === data.length) {
-                resolve();
-              }
+                console.log('Data inserted successfully:', result);
+                numInserted++;
+                if (numInserted === data.length) {
+                    resolve();
+                }
             }
-          });
+        });
         });
       });
     };
