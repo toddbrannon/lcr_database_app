@@ -28,6 +28,40 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
     }
   });
 
+  // Define the removeDuplicateRows function
+  const removeDuplicateRows = async () => {
+    const sql = `
+      CREATE TEMPORARY TABLE EmployeeHours_temp AS
+      SELECT *
+      FROM EmployeeHours
+      WHERE UniqueID IN (
+          SELECT UniqueID
+          FROM (
+              SELECT UniqueID
+              FROM EmployeeHours
+              GROUP BY UniqueID
+              HAVING COUNT(*) = 1
+          ) AS UniqueIDs
+      );
+      TRUNCATE TABLE EmployeeHours;
+      INSERT INTO EmployeeHours
+      SELECT * FROM EmployeeHours_temp;
+      DROP TEMPORARY TABLE IF EXISTS EmployeeHours_temp;
+    `;
+
+    return new Promise((resolve, reject) => {
+      pool.query(sql, (err, result) => {
+        if (err) {
+          console.error('Error removing duplicate rows:', err);
+          reject(err);
+        } else {
+          console.log('Duplicate rows removed successfully');
+          resolve(result);
+        }
+      });
+    });
+  };
+
   router.post('/upload', upload.single('file'), async (req, res) => {
     let dataToImport = [];
     console.log("Starting the upload process...");
@@ -97,8 +131,6 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
             });
           });
 
-          
-
           try {
             console.log("Before running Python script");
             dataToImport = await runPythonScript;
@@ -107,8 +139,8 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
             console.log("Before inserting data into database");
             console.log("Data to be inserted:" , dataToImport)
             await insertDataIntoDatabase(dataToImport);
-            console.log("After inserting data into database");
-  
+            console.log("After inserting data into database - before removing duplicate rows");
+            // await removeDuplicateRows();  // Call removeDuplicateRows here
             req.flash('success', 'Your data was uploaded successfully!');
             res.redirect('/?uploadSuccess=true');
           } catch (error) {
