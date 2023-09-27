@@ -12,7 +12,7 @@ module.exports = function(pool, formatDataDate) {
         const plainUser = req.user.toObject();
         console.log("USER PERMISSION (router.get('/')): ", plainUser.permission)
         // Implement data retrieval from the database and pass it to the 'index.ejs' template for rendering
-        const sqlQuery = 'SELECT Co, ID, Name, Department, HireDate, FirstCheckDate, PeriodBegin, PeriodEnd, CheckDate, `E-2RegHours`, `E-3OTHours`, `E-WALIWALI`, `E-WALISALWALISAL`, TotalHours, Location, JobCode, TotalDays, HoursPerDay FROM EmployeeHours';
+        const sqlQuery = 'SELECT Co, ID, Name, Department, HireDate, PeriodBegin, PeriodEnd, CheckDate, `E-2RegHours`, `E-3OTHours`, `E-WALIWALI`, `E-WALISALWALISAL`, TotalHours, Location, JobCode, TotalDays, HoursPerDay FROM EmployeeHours';
         //const sqlQuery = 'SELECT * FROM EmployeeHours';
 
         let columnsFromTable = [];

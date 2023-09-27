@@ -29,9 +29,12 @@ def concatenate_headers(header_rows):
             header_value = clean_header(cleaned_value)
 
         # Special handling for the last four headers
-        if header_value.endswith("_Hours"):
+        if header_value.endswith('___Hours_'):
             header_value = header_value.replace(
-                "_Hours", " Hours").replace("_", " ")
+                '___Hours_', '').replace('_', '')
+
+            # Remove any single quotes from the header_value
+        header_value = header_value.replace("'", "")
 
         headers.append(header_value)
 
@@ -42,10 +45,10 @@ def concatenate_headers(header_rows):
 
 def map_headers(headers):
     header_mapping = {
-        'E-2Reg_Hrs Hours': 'E-2RegHours',
-        'E-3OT_Hrs Hours': 'E-3OTHours',
-        'E-WALIWALI Hours': 'E-WALIWALI',
-        'E-WALISalWALISal Hours': 'E-WALISALWALISAL',
+        'E-2RegHrs': 'E-2RegHours',
+        'E-3OTHrs': 'E-3OTHours',
+        'E-WALIWALI': 'E-WALIWALI',
+        'E-WALISalWALISal': 'E-WALISALWALISAL',
         'Co': 'Co',
         'ID': 'ID',
         'Name': 'Name',
@@ -69,6 +72,10 @@ def load_and_process_csv(file_path):
     concatenated_headers = concatenate_headers(header_rows)
     mapped_headers = map_headers(concatenated_headers)
     data.columns = mapped_headers
+
+    # Drop the 'First_Check_Date' column if it exists
+    if 'First_Check_Date' in data.columns:
+        data = data.drop(columns=['First_Check_Date'])
 
     return data
 
