@@ -93,7 +93,6 @@ const pivotRouter = require('./routes/pivot_router')(pool);
 const locationRouter = require('./routes/locations_router')(pool);
 const jobcodesRouter = require('./routes/jobcodes_router')(pool);
 const uploadRouter = require('./routes/upload_router')(pool, storage, upload, formatDataDateForMySQL);
-const uploadCsvRouter = require('./routes/upload_csv_router')(pool, storage, upload, formatDataDateForMySQL);
 
 
 // Use route modules
