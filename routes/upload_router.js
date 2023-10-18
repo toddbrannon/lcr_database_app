@@ -120,17 +120,72 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      const headerRow = rows[0];
+    
+      // Sanitize function to normalize values
+      function sanitizeValue(value) {
+        if (value === null || value === undefined) {
+          return '';
+        }
 
-      for (let i = 1; i < rows.length; i++) {
+        let sanitizedValue = String(value).trim();
+        sanitizedValue = sanitizedValue.replace(/\r?\n|\r/g, ' ');
+        return sanitizedValue;
+      }
+    
+      // Create a merged header row
+      const headerFromRow0 = rows[0].slice(8, 12);
+      const headerFromRow1 = rows[1].slice(0, 8);
+
+      // Ensure no undefined or empty values in the headers
+      function sanitizeHeaderValue(value) {
+        return value || 'Placeholder';
+      }
+
+      const sanitizedHeaderFromRow0 = headerFromRow0.map(sanitizeHeaderValue);
+      const sanitizedHeaderFromRow1 = headerFromRow1.map(sanitizeHeaderValue);
+
+      const mergedHeader = sanitizedHeaderFromRow1.concat(sanitizedHeaderFromRow0);
+    
+      // Process the remaining rows using the merged header
+      for (let i = 2; i < rows.length; i++) { // Starting from row index 2 since the first two rows are header rows
         const rowData = rows[i];
         const entry = {};
-        for (let j = 0; j < headerRow.length; j++) {
-          const columnName = headerRow[j];
+        let expectedColumnIndex = 0; // Separate index for tracking position in expectedColumns array
+    
+        for (let j = 0; j < mergedHeader.length; j++) {
+          console.log(`Column ${j}, Value: ${mergedHeader[j]}`)
+          const columnName = mergedHeader[j];
+    
+          console.log("Merged Header (line 138): ", mergedHeader);
+    
+          // Skip processing for the 'First Check Date' column
+          if (columnName === 'First Check Date') {
+            continue;
+          }
+    
+          // Adjusted logic to use the correct index when accessing rowData
+          const dataIndex = j < 8 ? j : j - 1;  // Adjust the index to account for the skipped column
+          const value = sanitizeValue(rowData[dataIndex]);  // Sanitize the cell value
+    
+          const expectedColumnName = expectedColumns[expectedColumnIndex];
+    
+          function sanitizeColumnName(columnName) {
+            return columnName.replace(/\n/g, ' ').trim();
+          }
+    
+          const sanitizedColumnName = sanitizeColumnName(expectedColumnName);
+    
+          console.log("Sanitized Column Name: ", sanitizedColumnName);
+    
+          if (columnName !== expectedColumnName) {
+            return res.status(400).send(`Invalid column name (line 181): ${columnName}.`);
+          }
+    
           const dataType = columnDataTypes[columnName];
-          const value = rowData[j];
+          console.log("Column Name: ", columnName);
+    
           if (!dataType) {
-            return res.status(400).send(`Invalid data type for column ${columnName}.`);
+            return res.status(400).send(`Invalid data type for column (line 188) ${columnName}.`);
           }
           if (value === null || value === undefined || value === '') {
             entry[columnName] = null;
@@ -141,10 +196,12 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
           } else {
             entry[columnName] = dataType === 'number' ? parseFloat(value) : value;
           }
+          expectedColumnIndex++;
         }
         dataToImport.push(entry);
       }
     }
+    
 
     const insertDataIntoDatabase = async (data) => {
       const insertQuery = 'INSERT INTO EmployeeHours SET ?';

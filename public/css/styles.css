@@ -11,6 +11,34 @@
   box-shadow: none;
 }
 
+.admin-row {
+  background-color: #FAF0D9; /* Or any color you desire for admin rows */
+}
+
+.general-row {
+  background-color: #fff; /* Or any color you desire for general rows */
+}
+
+.badge {
+  padding: .5em .5em;
+  border-radius: .25em;
+  font-size: .65rem;
+}
+
+.badge-admin {
+  background-color: #D6F0E0; /* Custom background color for admin badge */
+  border: solid 1px #2C58A0;/* Custom background color for general badge */
+  color: #2C58A0;    
+  text-transform: uppercase;     /* Custom font color for general badge */
+}
+
+.badge-general {
+  background-color: #DEE7F6; /* Custom background color for admin badge */
+  border: solid 1px navy;/* Custom background color for general badge */
+  color: darkblue;    
+  text-transform: uppercase;     /* Custom font color for general badge */
+}
+
 .custom-file-input {
   margin-bottom: 10px;
 }

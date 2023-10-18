@@ -34,12 +34,18 @@
             </thead>
             <tbody>
               <% for(var i=0; i < users.length; i++) { %>
-                <tr>
+                <tr class="<%= users[i].permission === 'admin' ? 'admin-row' : 'general-row' %>">
+                  <!-- ... existing cells ... -->
                   <td style="font-size: 1.1rem;"><%= users[i].firstname %></td>
                   <td style="font-size: 1.1rem;"><%= users[i].lastname %></td>
                   <td style="font-size: 1.1rem;"><%= users[i].username %></td>
                   <td style="font-size: 1.1rem;"><%= users[i].email_address %></td>
-                  <td style="font-size: 1.1rem;"><%= users[i].permission %></td>
+                  <td style="font-size: 1.1rem;">
+                    <span class="badge <%= users[i].permission === 'admin' ? 'badge-admin' : 'badge-general' %>">
+                      <%= users[i].permission.charAt(0).toUpperCase() + users[i].permission.slice(1) %>
+                    </span>
+                  </td>
+                  
                   <td style="font-size: 1.1rem;">
                     <% 
                       const date = new Date(users[i].dateadded);
