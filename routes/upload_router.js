@@ -8,24 +8,6 @@ const moment = require('moment-timezone');
 
 module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
   router.get('/upload', (req, res) => {
-    if(req.isAuthenticated()){
-      console.log("USERNAME: ", req.user.username);
-      console.log("USER (router.get('/upload')): ", req.user);
-      console.log("Is Plain Object:", Object.getPrototypeOf(req.user) === Object.prototype);
-      const plainUser = req.user.toObject();
-      console.log("USER PERMISSION (router.get('/upload')): ", plainUser.permission);
-
-      res.render('upload', { 
-        username: req.user ? req.user.username : null,
-        req: req,
-        message: '', 
-        isLoggedIn: req.isAuthenticated(), 
-        isAdmin: plainUser.permission === 'admin',
-        messages: req.flash()
-      });
-    } else {
-      res.redirect('/login');
-    }
   });
 
   router.post('/upload', upload.single('file'), async (req, res) => {
@@ -116,10 +98,28 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
         }
       });
     } else if (req.file.mimetype === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-      const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+      try {
+        const csvData = await convertXlsxToCsv(req.file.buffer);
+        // Now proceed with your existing CSV processing logic
+        // For instance, assuming you have a function processCsvData to handle csv data:
+        await processCsvData(csvData);
+      } catch (error) {
+          console.error('Error converting xlsx to csv:', error);
+          res.status(500).send('There was an error converting the xlsx file.');
+      }
+    }
+
+    async function convertXlsxToCsv(buffer) {
+      return new Promise((resolve, reject) => {
+          const workbook = XLSX.read(buffer, {type: 'buffer'});
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const csvOutput = XLSX.utils.sheet_to_csv(worksheet);
+          if (csvOutput) resolve(csvOutput);
+          else reject(new Error('Conversion failed'));
+      });
+  }
     
       // Sanitize function to normalize values
       function sanitizeValue(value) {
@@ -201,7 +201,9 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
         dataToImport.push(entry);
       }
     }
-    
+
+
+
 
     const insertDataIntoDatabase = async (data) => {
       const insertQuery = 'INSERT INTO EmployeeHours SET ?';
