@@ -44,14 +44,14 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
 
     const expectedColumns = [
       'Co', 'ID', 'Name', 'Department', 'Hire Date', 'Period Begin', 'Period End',
-      'Check Date', 'E-2 Reg Hrs', 'E-3 OT Hrs', 'E-WALI WALI', 'E-WALISal WALISal'
+      'Check Date', 'E-2RegHours', 'E-3OTHours', 'E-WALIWALI', 'E-WALISalWALISal'
     ];    
 
     const columnDataTypes = {
       'Co': 'number', 'ID': 'number', 'Name': 'string', 'Department': 'string',
       'Hire Date': 'date', 'Period Begin': 'date', 'Period End': 'date',
-      'Check Date': 'date', 'E-2 Reg Hrs': 'number', 'E-3 OT Hrs': 'number',
-      'E-WALI WALI': 'number', 'E-WALISal WALISal': 'number'
+      'Check Date': 'date', 'E-2RegHours': 'number', 'E-3OTHours': 'number',
+      'E-WALIWALI': 'number', 'E-WALISalWALISal': 'number'
     };
     
 
@@ -133,8 +133,11 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
       }
     
       // Create a merged header row
-      const headerFromRow0 = rows[0].slice(8, 12);
-      const headerFromRow1 = rows[1].slice(0, 8);
+      const headerFromRow0 = rows[0].slice(9, 13);
+      const headerFromRow1 = rows[1].slice(0, 9);
+
+      console.log("Header from Row 0:", headerFromRow0);
+      console.log("Header from Row 1:", headerFromRow1);  
 
       // Ensure no undefined or empty values in the headers
       function sanitizeHeaderValue(value) {
@@ -156,7 +159,7 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
           console.log(`Column ${j}, Value: ${mergedHeader[j]}`)
           const columnName = mergedHeader[j];
     
-          console.log("Merged Header (line 138): ", mergedHeader);
+          console.log("Merged Header (line 159): ", mergedHeader);
     
           // Skip processing for the 'First Check Date' column
           if (columnName === 'First Check Date') {
@@ -170,15 +173,18 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
           const expectedColumnName = expectedColumns[expectedColumnIndex];
     
           function sanitizeColumnName(columnName) {
-            return columnName.replace(/\n/g, ' ').trim();
+            return columnName.replace(/\n/g, '').trim();
           }
     
           const sanitizedColumnName = sanitizeColumnName(expectedColumnName);
     
           console.log("Sanitized Column Name: ", sanitizedColumnName);
+
+          console.log("Column Name: ", columnName);
+          console.log("Expected Column Name: ", expectedColumnName);
     
           if (columnName !== expectedColumnName) {
-            return res.status(400).send(`Invalid column name (line 181): ${columnName}.`);
+            return res.status(400).send(`Invalid column name (line 184): ${columnName}.`);
           }
     
           const dataType = columnDataTypes[columnName];
