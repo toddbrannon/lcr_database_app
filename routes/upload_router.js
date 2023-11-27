@@ -2,8 +2,6 @@ const express = require('express');
 const XLSX = require('xlsx');
 const router = express.Router();
 const moment = require('moment-timezone');
-const UploadLog = require('../models/upload_logs'); // Adjust the path to where your model file is located
-
 
 module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
   router.get('/upload', (req, res) => {
@@ -81,7 +79,7 @@ function updateProgressBar(total, current) {
 
   router.post('/upload', upload.single('file'), async (req, res) => {
 
-    // Step 1: Check if a file is uploaded ====================
+    // Step
     // Check if a file is uploaded
     if (!req.file) {
       req.flash('error', 'No file selected');
@@ -140,18 +138,20 @@ function updateProgressBar(total, current) {
     });
 
     // Step 5: Map Data Rows to Database Column Schema with Custom Mapping
-    const mappedData = dataRows.map(row => {
-      let rowData = {};
-      headers.forEach((header, index) => {
+    const mappedData = dataRows
+      .filter(row => row.some(cell => cell))
+      .map(row => {
+        let rowData = {};
+        headers.forEach((header, index) => {
         // Apply the custom mapping function to header
-        const mappedHeader = mapUploadColumnNameToDatabase(header);
-        if (databaseColumnNames.includes(mappedHeader)) {
-          // Convert undefined values to empty strings
-          rowData[mappedHeader] = row[index] === undefined ? "" : row[index];
-        }
+          const mappedHeader = mapUploadColumnNameToDatabase(header);
+          if (databaseColumnNames.includes(mappedHeader)) {
+            // Convert undefined values to empty strings
+            rowData[mappedHeader] = row[index] === undefined ? "" : row[index];
+          }
+        });
+        return rowData;
       });
-      return rowData;
-    });
 
     // Log the first few sample mapped data objects to verify their structure
     console.log('Sample Mapped Data Objects:');
@@ -162,10 +162,15 @@ function updateProgressBar(total, current) {
     // Placeholder for next steps
     console.log('Data mapping to database columns completed successfully');
 
+    
+
+
     // Step 6: Insert Mapped Data into Database with Date Conversion
     const insertDataIntoDatabase = async (data) => {
       const insertQuery = 'INSERT INTO EmployeeHours SET ?';
       let count = 0;
+
+      console.log("Number of entries to be inserted:", data.length);
 
       for (const entry of data) {
         // Convert date columns
@@ -202,7 +207,9 @@ function updateProgressBar(total, current) {
 
     // Placeholder for response handling
     console.log('All data processed successfully');
-    res.send('Data uploaded and inserted into the database successfully.');
+    // res.send('Data uploaded and inserted into the database successfully.');
+    // Redirect to dashboard on success
+    res.redirect('/dashboard');
 
     } catch (error) {
       console.error('Error reading XLSX file:', error);
