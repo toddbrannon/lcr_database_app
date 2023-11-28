@@ -5,18 +5,23 @@
     <h1 class="mx-4 mt-5 mb-3">Employee Hours Report</h1>
 
     <form action="/pivot" method="GET">
-        <label class = "text-info mx-4 pl-2" for="citySelect">Select City:</label>
+        <label class = "text-info ml-4 mr-1 pl-2" for="citySelect">Select City:</label>
         <select name="city" id="citySelect" class="py-1 pr-2 pl-2">
             <option value="Lahaina">Lahaina</option>
             <option value="Puyallup">Puyallup</option>
             <!-- Add more options based on your cities -->
         </select>
         <button type="submit" class="btn btn-info btn-sm mb-1">Filter</button>
+        <label class = "text-info ml-4 mr-1 pl-2" for="citySelect">Hours threshold:</label>
+        <input type="number" id="thresholdValue" name="thresholdValue" min="1" max="999" />
+        <button type="button" id="applyButton" class="btn btn-info btn-sm mb-1">Apply</button>
+        <button type="button" id="clearButton" class="btn btn-info btn-sm mb-1" style="display: none;">Clear</button>
     </form>
 
     <% for (const jobDesc of jobDescriptions) { %>
         <h5 class="mt-2 mx-4 text-secondary"><%= jobDesc %></h5>
-        <table id="dataTable" class="table table-striped mx-4 mx-lg-1 px-4 table-bordered">
+        <div class = "fixed-first-column" style="overflow-x: auto; overflow-y: auto; max-height: 400px;"> <!-- Add this div with overflow-x style -->
+        <table id="dataTable" class="table table-striped mx-4 mx-lg-1 px-4 table-bordered fixed-header">
             <thead>
                 <tr>
                     <th class="name-column">Name</th>
@@ -46,9 +51,56 @@
           </tbody>
           
         </table>
+        </div> <!-- Close the div here -->
         <% } %>
       
   </div>
+
+  <script>
+    document.getElementById('thresholdValue').addEventListener('input', function() {
+        var value = this.value;
+        var clearButton = document.getElementById('clearButton');
+        if (value) {
+            clearButton.style.display = 'inline-block'; // Show the button
+        } else {
+            clearButton.style.display = 'none'; // Hide the button
+        }
+    });
+
+    document.getElementById('applyButton').addEventListener('click', function() {
+        var threshold = document.getElementById('thresholdValue').value;
+        threshold = parseInt(threshold, 10);
+        this.blur(); // Remove focus from the button
+
+        // Validate the input
+        if (isNaN(threshold) || threshold < 1 || threshold > 999) {
+            alert('Please enter a number between 1 and 999');
+            return;
+        }
+
+        // Apply formatting to the tables
+        document.querySelectorAll('#dataTable tbody tr td').forEach(function(td) {
+            var value = parseFloat(td.textContent);
+            if (!isNaN(value) && value > threshold) {
+                td.style.backgroundColor = 'lightgreen';
+            } else {
+                td.style.backgroundColor = ''; // Reset the background
+            }
+        });
+    });
+    document.getElementById('clearButton').addEventListener('click', function() {
+        // Clear the input field
+        document.getElementById('thresholdValue').value = '';
+        clearButton.style.display = 'none'; // Hide the button
+        this.blur(); // Remove focus from the button
+
+        // Remove formatting from the tables
+        document.querySelectorAll('#dataTable tbody tr td').forEach(function(td) {
+            td.style.backgroundColor = ''; // Reset the background
+        });
+    });
+</script>
+
     
 </body>  
 

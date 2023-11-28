@@ -2,10 +2,6 @@ import pandas as pd
 import json
 import sys
 
-# Comment out or remove the following line
-# print("Running process_csv.py", file=sys.stderr)  # Now it will print to stderr instead of stdout
-
-
 def clean_header(header):
     return str(header).strip().replace(" ", "_").replace("\n", "").replace('"', '')
 
@@ -39,9 +35,6 @@ def concatenate_headers(header_rows):
         headers.append(header_value)
 
     return headers
-
-# ... rest of your code ...
-
 
 def map_headers(headers):
     header_mapping = {

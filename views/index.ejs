@@ -34,9 +34,10 @@
         </div>
       </div>
       <div class="card-body">
-        <table id="dataTable" class="table table-bordered mx-4 mx-lg-1 px-4"> <!-- Adjust mx-1 and mx-4 classes -->
+        <div style="overflow-x: auto; overflow-y: auto; max-height: 800px;">
+        <table id="dataTable" class="table table-bordered mx-4 mx-lg-1 px-4 fixed-header"> <!-- Adjust mx-1 and mx-4 classes -->
           <!-- Table header -->
-          <thead class="thead-light">
+          <thead>
             <tr>
               <th>#</th>
               <th data-sortable="Co">Co</th>
@@ -85,7 +86,7 @@
               <% }); %>
             </div>
           </tbody>
-        </table>
+        </div>
       </div>
     </div>
 

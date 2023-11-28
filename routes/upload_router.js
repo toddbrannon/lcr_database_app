@@ -138,20 +138,37 @@ function updateProgressBar(total, current) {
     });
 
     // Step 5: Map Data Rows to Database Column Schema with Custom Mapping
+    // const mappedData = dataRows
+    //   .filter(row => row.some(cell => cell))
+    //   .map(row => {
+    //     let rowData = {};
+    //     headers.forEach((header, index) => {
+    //     // Apply the custom mapping function to header
+    //       const mappedHeader = mapUploadColumnNameToDatabase(header);
+    //       if (databaseColumnNames.includes(mappedHeader)) {
+    //         // Convert undefined values to empty strings
+    //         rowData[mappedHeader] = row[index] === undefined ? "" : row[index];
+    //       }
+    //     });
+    //     return rowData;
+    //   });
+
     const mappedData = dataRows
-      .filter(row => row.some(cell => cell))
-      .map(row => {
-        let rowData = {};
-        headers.forEach((header, index) => {
-        // Apply the custom mapping function to header
-          const mappedHeader = mapUploadColumnNameToDatabase(header);
-          if (databaseColumnNames.includes(mappedHeader)) {
-            // Convert undefined values to empty strings
-            rowData[mappedHeader] = row[index] === undefined ? "" : row[index];
-          }
-        });
-        return rowData;
+    .filter(row => row.some(cell => cell))
+    .map(row => {
+      let rowData = {};
+      databaseColumnNames.forEach(columnName => {
+        const headerIndex = headers.findIndex(header => mapUploadColumnNameToDatabase(header) === columnName);
+        if (headerIndex >= 0) {
+          // Column exists in the uploaded data
+          rowData[columnName] = row[headerIndex] === undefined ? "" : row[headerIndex];
+        } else {
+          // Column missing in the uploaded data, set default value
+          rowData[columnName] = 0;
+        }
       });
+      return rowData;
+    });
 
     // Log the first few sample mapped data objects to verify their structure
     console.log('Sample Mapped Data Objects:');
