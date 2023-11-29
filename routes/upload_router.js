@@ -33,23 +33,35 @@ module.exports = function(pool, storage, upload, formatDataDateForMySQL) {
 
   // Function to map upload column name to database column name
   function mapUploadColumnNameToDatabase(uploadColumnName) {
-
-    // Special cases for specific columns
-    if (uploadColumnName === 'E-WALI WALI Hours') {
-      return 'E-WALIWALI';
+    // Normalize the header by removing newline characters and all spaces
+    let normalizedHeader = uploadColumnName.replace(/\n/g, '').replace(/\s+/g, '');
+  
+    // Custom mapping for specific cases
+    const customHeaderMap = {
+      'E-2RegHrsHours': 'E-2RegHours',
+      'E-3OTHrsHours': 'E-3OTHours',
+      'E-WALIWALIHours': 'E-WALIWALI',
+      'E-WALISalWALISalHours': 'E-WALISALWALISAL',
+      // Add other specific mappings as needed
+    };
+  
+    // Use custom mapping if available
+    if (customHeaderMap[normalizedHeader]) {
+      console.log(`Mapping upload column '${uploadColumnName}' (normalized: '${normalizedHeader}') to database column '${customHeaderMap[normalizedHeader]}'`);
+      return customHeaderMap[normalizedHeader];
     }
-    if (uploadColumnName === 'E-WALISal WALISal Hours') {
-      return 'E-WALISALWALISAL';
+  
+    // Default transformation for other columns if not in the map
+    if (normalizedHeader.includes('Hrs')) {
+      normalizedHeader = normalizedHeader.replace('Hrs', 'Hours');
     }
-
-    // General transformation for other columns
-    let columnName = uploadColumnName.replace(/ /g, '');
-    if (columnName.includes('Hrs')) {
-      columnName = columnName.replace('Hrs', '');
-    }
-    console.log(`Mapping upload column '${uploadColumnName}' to database column '${columnName}'`);
-    return columnName;
+  
+    console.log(`Mapping upload column '${uploadColumnName}' (normalized: '${normalizedHeader}') to database column '${normalizedHeader}'`);
+    return normalizedHeader;
   }
+  
+  
+  
 
   // Function to convert Excel date serial number to MySQL date string
   function convertExcelDateToMySQLDate(excelSerialDate) {
@@ -137,38 +149,23 @@ function updateProgressBar(total, current) {
       console.log(`Row ${index + 3}:`, row);
     });
 
-    // Step 5: Map Data Rows to Database Column Schema with Custom Mapping
-    // const mappedData = dataRows
-    //   .filter(row => row.some(cell => cell))
-    //   .map(row => {
-    //     let rowData = {};
-    //     headers.forEach((header, index) => {
-    //     // Apply the custom mapping function to header
-    //       const mappedHeader = mapUploadColumnNameToDatabase(header);
-    //       if (databaseColumnNames.includes(mappedHeader)) {
-    //         // Convert undefined values to empty strings
-    //         rowData[mappedHeader] = row[index] === undefined ? "" : row[index];
-    //       }
-    //     });
-    //     return rowData;
-    //   });
-
     const mappedData = dataRows
-    .filter(row => row.some(cell => cell))
+    .filter(row => row.some(cell => cell))  // Filter out completely empty rows
     .map(row => {
       let rowData = {};
       databaseColumnNames.forEach(columnName => {
         const headerIndex = headers.findIndex(header => mapUploadColumnNameToDatabase(header) === columnName);
         if (headerIndex >= 0) {
           // Column exists in the uploaded data
-          rowData[columnName] = row[headerIndex] === undefined ? "" : row[headerIndex];
+          rowData[columnName] = row[headerIndex] !== undefined ? row[headerIndex] : "";
         } else {
           // Column missing in the uploaded data, set default value
-          rowData[columnName] = 0;
+          rowData[columnName] = columnName.startsWith('E-') ? 0 : '';  // Assuming E- prefixed columns are numeric
         }
       });
       return rowData;
     });
+
 
     // Log the first few sample mapped data objects to verify their structure
     console.log('Sample Mapped Data Objects:');
@@ -224,7 +221,9 @@ function updateProgressBar(total, current) {
 
     // Placeholder for response handling
     console.log('All data processed successfully');
-    // res.send('Data uploaded and inserted into the database successfully.');
+    
+    
+
     // Redirect to dashboard on success
     res.redirect('/dashboard');
 
