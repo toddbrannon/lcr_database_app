@@ -20,6 +20,7 @@
       var fileInput = document.getElementById('file');
       if (fileInput.value !== '') { // Check if a file is selected
         document.getElementById('progressBar').style.display = 'block';
+        this.blur(); // Remove focus from the button
         pollProgress();
       }
     });
