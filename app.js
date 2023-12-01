@@ -60,10 +60,15 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use(session({
   secret: 'mysecret',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   store: MongoStore.create({ 
     mongoUrl: process.env.MONGO_URI 
-  })
+  }),
+  cookie: {
+    secure: true, // set to true if using https
+    httpOnly: true, // prevents client-side JS from reading the cookie 
+    maxAge: 1000 * 60 * 60 * 24 // cookie expiry length in milliseconds
+  }
 }));
 
 // Initialize Passport and session
