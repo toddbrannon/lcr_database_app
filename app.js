@@ -7,6 +7,7 @@ const multer = require('multer');
 const XLSX = require('xlsx');
 const moment = require('moment-timezone');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const flash = require('connect-flash');
@@ -59,7 +60,10 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use(session({
   secret: 'mysecret',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: true,
+  store: MongoStore.create({ 
+    mongoUrl: process.env.MONGO_URI 
+  })
 }));
 
 // Initialize Passport and session
