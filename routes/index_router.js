@@ -66,6 +66,7 @@ module.exports = function(pool, formatDataDate) {
       const plainUser = req.user.toObject();
       res.render('dashboard', { 
             req: req, 
+            message: '',
             username: req.user ? req.user.username : null,
             firstname: req.user ? req.user.firstname : null,
             lastname: req.user ? req.user.lastname : null,
