@@ -66,13 +66,22 @@
 }
 
 .dashboard-logout {
-  background-color: lightgray;
-  border-color: lightgray;
+  /* background-color: lightgray; */
+  /* border-color: lightgray; */
+  background-color: #f89c2b;
+  border-color: #f89c2b;
+  color: white;
 }
 
-.dashboard-logout:hover {
+/* .dashboard-logout:hover {
   background-color: darkgray;
   border-color: darkgray;
+} */
+
+.dashboard-logout:hover {
+  background-color: #f98900;
+  border-color: #f98900;
+  color: #ffffffb3
 }
 
 /* Reduce font size for table headers */
@@ -138,6 +147,23 @@ th.custom-header {
   color: pink;
 }
 
+.fixed-header thead {
+  position: sticky;
+  top: 0;
+  background-color: #6C757D;
+  color: white;
+  z-index: 1;
+}
+
+.fixed-first-column table td:first-child,
+.fixed-first-column table th:first-child {
+    width: 150px; /* Adjust the width as needed */
+    min-width: 150px; /* Optional, ensures the width is not smaller than the set value */
+    max-width: 150px; /* Optional, ensures the width is not larger than the set value */
+    white-space: nowrap; /* Keeps the content in a single line */
+}
+
+
 .spinner {
   display: inline-block;
   position: relative;
@@ -169,7 +195,6 @@ th.custom-header {
   left: 45px;
   animation: spinner 0.6s infinite;
 }
-
 @keyframes spinner {
   0% {
     transform: scale(0);
