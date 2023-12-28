@@ -218,18 +218,26 @@ function updateProgressBar(total, current) {
       }
       console.log("Duplicate Count: ", duplicateCount)
       // After the loop
-      if (duplicateCount > 0) {
-        console.log(`There are ${duplicateCount} records in your upload file appear to already exist in the database. Please check your file and try again. If you feel that this is an error or have questions, please contact application support.`)
-        const message = `There are ${duplicateCount} records in your upload file appear to already exist in the database. Please check your file and try again. If you feel that this is an error or have questions, please contact application support.`;
-        req.flash('error', message); // Use your existing messaging/notification system
-        // Redirect back to the upload page to display the error message
+      if (duplicateCount === data.length) {
+        // All records are duplicates
+        console.log(`All ${duplicateCount} records in your upload file were not inserted because they appear to already exist in the database.`);
+        const message = `All ${duplicateCount} records in your upload file were not inserted because they appear to already exist in the database. Please check your file and try again.`;
+        req.flash('error', message);
+        res.redirect('/upload');
+      } else if (duplicateCount > 0) {
+        // Some, but not all, records are duplicates
+        console.log(`There are ${duplicateCount} records in your upload file that were not inserted because they appear to already exist in the database.`);
+        const message = `${duplicateCount} records in your upload file were not inserted because they appear to already exist in the database. The rest of the records have been processed successfully.`;
+        req.flash('info', message);
         res.redirect('/upload');
       } else {
+        // No duplicates
         console.log(`Total Processed Entries: ${count} of ${data.length}`);
-        // Redirect to dashboard on success
-        res.redirect('/dashboard');
-        req.flash('success', 'File uploaded successfully');
+        const message = `Total Processed Entries: ${count} of ${data.length}`;
+        req.flash('success', message);
+        res.redirect('/upload');
       }
+      
     };
 
     await insertDataIntoDatabase(mappedData);

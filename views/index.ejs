@@ -60,7 +60,7 @@
           </thead>
           <!-- Table body -->
           <tbody>
-            <div id="table-body">
+            <!-- <div id="table-body"> -->
               <% data.forEach((item, index) => { %>
                 <tr>
                   <td><%= index + 1 %></td>
@@ -83,7 +83,7 @@
                   <td data-column="HoursPerDay"><%= item['HoursPerDay'] %></td>
                 </tr>
               <% }); %>
-            </div>
+            <!-- </div> -->
           </tbody>
         </table>
       </div>
@@ -126,7 +126,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="/js/custom.js"></script>
-  <script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.min.css">
 
 
@@ -147,74 +147,23 @@
 
   <script>
     $(document).ready(function () {
-      // Initialize DataTable
-      $('#dataTable').DataTable();
-  
-      // Disable ordering for non-sortable columns
       $('#dataTable').DataTable({
         columnDefs: [
           { orderable: false, targets: ['no-sort'] }
-        ]
+        ],
+        paging: true, // Enable pagination
+        pageLength: 10, // Set the number of records per page
+        lengthChange: true, // Allow the user to change the page size
+        searching: true, // Enable search functionality
+        ordering: true, // Enable column-based sorting
+        info: true // Display table information
       });
     });
   </script>
-
-  <script>
-  // Additional JavaScript to handle checkbox selection
-  $(document).ready(function() {
-    // Code for handling DataTable initialization and other features
-    // ...
-
-    // Select All functionality
-    $('#selectAll').click(function() {
-      $('.column-checkbox').prop('checked', $(this).prop('checked'));
-    });
-
-    // Uncheck 'Select All' if an individual checkbox is unchecked
-    $('.column-checkbox').click(function() {
-      if (!$(this).prop('checked')) {
-        $('#selectAll').prop('checked', false);
-      }
-    });
-  });
-  </script>
-
-  <!-- Handle the `Save changes` button click in the columns modal -->
-  <script>
-    $(document).ready(function() {
-      $('#save-changes-button').click(function() {
-        console.log('Save button clicked');
-        
-        // Capture all checkboxes that are checked
-        const checkedBoxes = $('.column-checkbox:checked');
-        
-        // Extract the column names from checked boxes
-        const selectedColumns = Array.from(checkedBoxes).map(function(checkbox) {
-          return checkbox.id; // Assuming the ID of each checkbox is the column name
-        });
-        
-        // Do something with the selected columns (e.g., store them, make an AJAX request, etc.)
-        console.log('Selected Columns:', selectedColumns);
-
-        // Hide all columns initially
-        $('td[data-column]').hide();
-        $('th[data-sortable]').hide();
-
-        // Show only the selected columns
-        selectedColumns.forEach(function(column) {
-          $(`td[data-column="${column}"]`).show();
-          $(`th[data-sortable="${column}"]`).show();
-        });
-        
-        // Optionally close the modal if you wish
-        $('#columnSelectorModal').modal('hide');  // Using the correct ID for the modal here
-      });
-      // Code to show all columns initially when the page loads
-      $('td[data-column]').show();
-      $('th[data-sortable]').show();
-    });
-    
-  </script>
+  
+  
+  
+  
   
 </body>
 

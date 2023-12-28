@@ -169,6 +169,7 @@ th.custom-header {
   left: 45px;
   animation: spinner 0.6s infinite;
 }
+
 @keyframes spinner {
   0% {
     transform: scale(0);
@@ -177,3 +178,9 @@ th.custom-header {
     transform: scale(1);
   }
 }
+
+.alert {
+  opacity: 0; /* Initially hidden */
+  transition: opacity 1s ease-in; /* Smooth transition for opacity change */
+}
+

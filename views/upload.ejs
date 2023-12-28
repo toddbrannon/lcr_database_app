@@ -7,19 +7,50 @@
     <form action="/upload" method="POST" enctype="multipart/form-data">
       <div class="form-group">
         <label for="file">Select a file:</label>
-        <input type="file" class="form-control" id="file" name="file">
+        <input type="file" class="form-control" id="file" name="file" style="height: 2.7em;">
       </div>
       <button type="submit" class="btn btn-primary">Upload</button>
     </form>
-    <% if (message) { %>
-      <p><%= message %></p>
-    <% } %>
+    <br>
     <% if (messages.error) { %>
-      <div class="alert alert-danger mt-4">
-        <%= messages.error %>
-      </div>
+      <% messages.error.forEach(function(msg) { %>
+        <div class="alert alert-danger"><%= msg %></div>
+      <% }); %>
+    <% } %>
+    <% if (messages.success) { %>
+      <% messages.success.forEach(function(msg) { %>
+        <div class="alert alert-success"><%= msg %></div>
+      <% }); %>
+    <% } %>
+    <% if (messages.info) { %>
+      <% messages.info.forEach(function(msg) { %>
+        <div class="alert alert-info"><%= msg %></div>
+      <% }); %>
     <% } %>
     
+    
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var fileInput = document.getElementById('file');
+      fileInput.addEventListener('click', function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+          alert.remove(); // Removes each element with the 'alert' class
+        });
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var flashMessages = document.querySelectorAll('.alert');
+      flashMessages.forEach(function(message) {
+        // Gradually change the opacity to 1
+        setTimeout(function() {
+          message.style.opacity = 1;
+        }, 100); // Small delay to ensure the initial style is rendered
+      });
+    });
+  </script>
+  
 </body>
 </html>
