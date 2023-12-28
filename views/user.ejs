@@ -4,7 +4,7 @@
 <div class="container">
   <div class="row justify-content-center mt-4">
     <div class="col-lg-4 col-md-8 col-sm-10"> 
-      <h1>New User</h1>
+      <h1>Add New User</h1>
       <div class="card mt-4"> <!-- Added "mt-4" class for top margin -->
         <div class="card-body">
           <div class="mb-3"> <!-- Added a wrapper with "mb-3" class -->
@@ -40,10 +40,10 @@
               </div>
               <div class="row align-items-center justify-content-between px-4">
                 <div class="mr-4">
-                  <a href="/admin/users">Back</a>
+                  <a href="/admin/users">Cancel</a>
                 </div>
                 
-                <button type="submit" class="btn btn-light"><%= updateBtn %></button>
+                <button type="submit" class="btn btn-success"><%= updateBtn %></button>
               </div>
             </form>
             <% if (error && error.length > 0) { %>
