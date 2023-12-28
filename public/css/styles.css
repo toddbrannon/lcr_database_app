@@ -60,6 +60,23 @@
   border-color:#1A60AC;
 }
 
+.btn-info-lcr {
+  background-color: #1A60AC;
+  border-color:#1A60AC;
+  color: white;
+}
+
+.btn-info-lcr:hover {
+  background-color: #F0F8FF;
+  border-color:#F0F8FF;
+  color: #1A60AC;
+  border: #1A60AC solid 1px;
+}
+
+.text-info-lcr {
+  color: #1A60AC;
+}
+
 .btn-send-link {
   background-color: #1A60AC;
   border-color:#1A60AC;
@@ -121,7 +138,14 @@ th.custom-header {
 } */
 
 .name-column {
-  width: 300px;
+  width: 400px;
+}
+
+.name-cell {
+  max-width: 335px; /* Adjust the width as needed */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Remove list-style bullets from navbar items */
@@ -163,6 +187,10 @@ th.custom-header {
     white-space: nowrap; /* Keeps the content in a single line */
 }
 
+tfoot {
+  font-weight: bold;
+  background-color: #f89c2b; /* Light grey background for footer */
+}
 
 .spinner {
   display: inline-block;
