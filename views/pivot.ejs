@@ -16,7 +16,7 @@
         <input type="number" id="thresholdValue" name="thresholdValue" min="1" max="999" />
         <button type="button" id="applyButton" class="btn btn-info-lcr btn-sm mb-1">Apply</button>
         <button type="button" id="clearButton" class="btn btn-info-lcr btn-sm mb-1" style="display: none;">Clear</button>
-        <button id="exportButton" class="btn btn-info-lcr btn-sm mb-1 ml-4">Export to Excel</button>
+        <button type="button" id="exportBtn" class="btn btn-info-lcr btn-sm mb-1 ml-4">Export to Excel</button>
 
     </form>
 
@@ -68,6 +68,7 @@
   </div>
 
   <script>
+
     document.getElementById('thresholdValue').addEventListener('input', function() {
         var value = this.value;
         var clearButton = document.getElementById('clearButton');
@@ -134,6 +135,69 @@
           cell.textContent = ''; // Clear the count cells
         });
         updateCounts(); // Recalculate counts (will be zero if cleared)
+      });
+
+
+        
+      // Export to Excel
+      document.getElementById('exportBtn').addEventListener('click', function() {
+      console.log('Exporting to Excel...');
+      const thresholdValue = document.getElementById('thresholdValue').value;
+      const table = document.getElementById('dataTable');
+      const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
+
+      const data = [];
+      const rows = table.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+          const rowData = {};
+          const cells = row.querySelectorAll('td');
+          cells.forEach((cell, index) => {
+            const headerKey = headers[index].toLowerCase().replace(/\s+/g, '_');
+            rowData[headerKey] = cell.textContent;
+          });
+          data.push(rowData);
+        });
+  
+      fetch('/export', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ headers, data, threshold: thresholdValue })
+      })
+      .then(response => response.blob())
+      .then(blob => {
+        // Create a link element, use it to download the file, then delete the link
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = 'report.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      });
+    });
+
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const table = document.getElementById('dataTable');
+        if (!table) {
+          console.error('Table not found!');
+          return;
+        }
+      
+        const exportBtn = document.getElementById('exportBtn');
+        if (!exportBtn) {
+          console.error('Export button not found!');
+          return;
+        }
+      
+        // Rest of your event listener code...
+        console.log('DOM fully loaded and parsed');
       });
 </script>
 

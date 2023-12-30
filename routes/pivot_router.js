@@ -6,15 +6,15 @@ module.exports = function(pool) {
   router.get('/pivot', (req, res) => {
     if(req.isAuthenticated()) {
 
-      console.log("USER (router.get('/pivot')): ", req.user);
-      console.log("Is Plain Object:", Object.getPrototypeOf(req.user) === Object.prototype);
+      // console.log("USER (router.get('/pivot')): ", req.user);
+      // console.log("Is Plain Object:", Object.getPrototypeOf(req.user) === Object.prototype);
       const plainUser = req.user.toObject();
-      console.log("USER PERMISSION (router.get('/pivot')): ", plainUser.permission)
+      // console.log("USER PERMISSION (router.get('/pivot')): ", plainUser.permission)
 
       const selectedCity = req.query.city || 'Lahaina';
       
       const query = `
-        SELECT eh.PeriodEnd, eh.Name, j.JobDescription, l.City, SUM(eh.TotalHours) AS TotalHours
+        SELECT eh.PeriodEnd, eh.Name, j.JobDescription, l.City, eh.TotalHours AS TotalHours
         FROM EmployeeHours AS eh
         JOIN JobCode AS j ON RIGHT(eh.Department, 2) = j.JobCode
         JOIN Location AS l ON eh.Co = l.Co
@@ -22,12 +22,16 @@ module.exports = function(pool) {
         GROUP BY eh.PeriodEnd, eh.Name, j.JobDescription, l.City
         ORDER BY eh.PeriodEnd, eh.Name, j.JobDescription;
       `;
+
+      // console.log("Query: ", query);
       
       pool.query(query, (error, results) => {
         if (error) {
             console.error('Error executing query:', error);
             return res.status(500).send('Internal Server Error');
         }
+
+        // console.log("First 10 raw query results:", results.slice(0, 10));
       
         // Process and pivot data
         const pivotedData = {}; // Use an object for pivoting
@@ -53,8 +57,8 @@ module.exports = function(pool) {
               pivotedData[key].PeriodEnds[formattedDate] = row.TotalHours;
           }
         
-          console.log("Period End: ", row.PeriodEnd)
-          console.log("Total Hours: ", row.TotalHours)
+          // console.log("Period End: ", row.PeriodEnd)
+          // console.log("Total Hours: ", row.TotalHours)
         });
       
         // Extract unique job descriptions
@@ -74,8 +78,8 @@ module.exports = function(pool) {
           return formattedDate;
         });
       
-        console.log("Period Ends: ", periodEnds)
-        console.log("Formatted Period Ends: ", formattedPeriodEnds)
+        // console.log("Period Ends: ", periodEnds)
+        // console.log("Formatted Period Ends: ", formattedPeriodEnds)
       
         res.render('pivot.ejs', { 
           req: req,

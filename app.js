@@ -22,6 +22,7 @@ require('dotenv').config(); // Load environment variables from .env file
 
 // Set up static file serving
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
 // Set up body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -93,6 +94,7 @@ const pivotRouter = require('./routes/pivot_router')(pool);
 const locationRouter = require('./routes/locations_router')(pool);
 const jobcodesRouter = require('./routes/jobcodes_router')(pool);
 const uploadRouter = require('./routes/upload_router')(pool, storage, upload, formatDataDateForMySQL);
+const exportRouter = require('./routes/export_router');
 
 
 // Use route modules
@@ -103,6 +105,7 @@ app.use('/', pivotRouter);
 app.use('/', uploadRouter);
 app.use('/', locationRouter);
 app.use('/', jobcodesRouter);
+app.use('/', exportRouter);
 
 // Function to format date strings or Excel serial dates to MySQL date format (YYYY-MM-DD)
 // Function to format date strings or Excel serial dates to MySQL date format (YYYY-MM-DD)
