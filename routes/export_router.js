@@ -4,31 +4,21 @@ const ExcelJS = require('exceljs');
 
 router.post('/export', async (req, res) => {
   try {
-      // Destructure and log the incoming data for debugging
-      const { headers, data, threshold } = req.body;
-      console.log('Received headers:', headers);
-      console.log('Received data:', data);
-      console.log('Received threshold:', threshold);
+    const { groupedData } = req.body;
 
-      // Check if headers is an array and not empty
-      if (!Array.isArray(headers) || headers.length === 0) {
-          throw new Error('Headers are missing or not an array');
-      }
+    const workbook = new ExcelJS.Workbook();
 
-      const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('Employee Hours Report');
+    groupedData.forEach(group => {
+        const worksheet = workbook.addWorksheet(group.jobDesc); // Use jobDesc as the sheet name
+        worksheet.columns = group.headers.map(header => ({
+            header: header,
+            key: header.toLowerCase().replace(/\s+/g, '_'),
+            width: 20
+        }));
 
-      // Dynamically set columns based on received headers
-      worksheet.columns = headers.map(header => ({
-          header: header,
-          key: header.toLowerCase().replace(/\s+/g, '_'),
-          width: 20
-      }));
-
-      // Add rows
-      data.forEach(item => {
-          worksheet.addRow(item);
-      });
+        group.data.forEach(item => {
+            worksheet.addRow(item);
+        });
 
       // Apply conditional formatting
       const thresholdValue = parseInt(threshold, 10);
@@ -46,6 +36,7 @@ router.post('/export', async (req, res) => {
                   };
               }
           });
+        });
       });
 
       // Write to a buffer and send as response

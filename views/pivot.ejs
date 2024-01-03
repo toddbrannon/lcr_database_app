@@ -141,29 +141,32 @@
         
       // Export to Excel
       document.getElementById('exportBtn').addEventListener('click', function() {
-      console.log('Exporting to Excel...');
-      const thresholdValue = document.getElementById('thresholdValue').value;
-      const table = document.getElementById('dataTable');
-      const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
-
-      const data = [];
-      const rows = table.querySelectorAll('tbody tr');
-      rows.forEach(row => {
-          const rowData = {};
-          const cells = row.querySelectorAll('td');
-          cells.forEach((cell, index) => {
-            const headerKey = headers[index].toLowerCase().replace(/\s+/g, '_');
-            rowData[headerKey] = cell.textContent;
+        console.log('Exporting to Excel...');
+        const groupedData = [];
+        document.querySelectorAll('.group-container').forEach(groupContainer => {
+          const jobDesc = groupContainer.querySelector('.job-description').textContent;
+          const table = groupContainer.querySelector('table');
+          const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
+  
+          const data = [];
+          table.querySelectorAll('tbody tr').forEach(row => {
+              const rowData = {};
+              row.querySelectorAll('td').forEach((cell, index) => {
+                  const headerKey = headers[index].toLowerCase().replace(/\s+/g, '_');
+                  rowData[headerKey] = cell.textContent;
+              });
+              data.push(rowData);
           });
-          data.push(rowData);
-        });
+  
+          groupedData.push({ jobDesc, headers, data });
+      });
   
       fetch('/export', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ headers, data, threshold: thresholdValue })
+        body: JSON.stringify({ groupedData })
       })
       .then(response => response.blob())
       .then(blob => {
