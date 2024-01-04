@@ -21,7 +21,7 @@ router.post('/export', async (req, res) => {
         });
 
       // Apply conditional formatting
-      const thresholdValue = parseInt(threshold, 10);
+      const thresholdValue = parseInt(thresholdValue, 10);
       worksheet.eachRow({ includeEmpty: false }, function(row, rowNumber) {
           row.eachCell({ includeEmpty: false }, function(cell, colNumber) {
               if (colNumber > 2) { // Adjust based on your specific columns
