@@ -5,15 +5,12 @@
     <h1 class="mx-4 mt-5 mb-3">Employee Hours Report</h1>
 
     <form action="/pivot" method="GET">
-
-        <label class = "text-info-lcr ml-4 mr-1 pl-2" for="locationSelect">Select Location:</label>
-        <select name="location" id="locationSelect" class="py-1 pr-2 pl-2">
-          <% locations.forEach(location => { %>
-              <option value="<%= location %>"><%= location %></option>
-          <% }); %>
-      </select>
-
-
+        <label class = "text-info-lcr ml-4 mr-1 pl-2" for="citySelect">Select City:</label>
+        <select name="city" id="citySelect" class="py-1 pr-2 pl-2">
+            <option value="Lahaina">Lahaina</option>
+            <option value="Puyallup">Puyallup</option>
+            <!-- Add more options based on your cities -->
+        </select>
         <button type="submit" class="btn btn-info-lcr btn-sm mb-1">Filter</button>
         <label class = "text-info-lcr ml-4 mr-1 pl-2" for="citySelect">Hours threshold:</label>
         <input type="number" id="thresholdValue" name="thresholdValue" min="1" max="999" />
@@ -31,10 +28,9 @@
                 <tr>
                     <th class="name-column">Name</th>
                     <th>City</th>
-                    <th>Location</th>
-                    <% if (checkDates.length > 0) { %>
-                      <% for (const checkDate of formattedCheckDates) { %>
-                          <th><%= checkDate %></th>
+                    <% if (periodEnds.length > 0) { %>
+                      <% for (const periodEnd of formattedPeriodEnds) { %>
+                          <th><%= periodEnd %></th>
                       <% } %>
                   <% } %>
                 </tr>
@@ -46,10 +42,9 @@
                       <tr>
                           <td class="name-cell"><%= employeeData.Name %></td>
                           <td><%= employeeData.City %></td>
-                          <td><%= employeeData.Location %></td>
-                          <% if (checkDates.length > 0) { %>
-                              <% for (const checkDate of formattedCheckDates) { %>
-                                  <td><%= employeeData.CheckDates[checkDate] || 0 %></td>
+                          <% if (periodEnds.length > 0) { %>
+                              <% for (const periodEnd of formattedPeriodEnds) { %>
+                                  <td><%= employeeData.PeriodEnds[periodEnd] || 0 %></td>
                               <% } %>
                           <% } %>
                       </tr>
@@ -60,7 +55,7 @@
           <tfoot>
                 <tr>
                 <td colspan="2">Count</td> <!-- colspan=2 for Name and City columns -->
-                <% formattedCheckDates.forEach(function() { %>
+                <% formattedPeriodEnds.forEach(function() { %>
                     <td class="count-cell"></td> <!-- Empty cell for each date column -->
                 <% }); %>
                 </tr>

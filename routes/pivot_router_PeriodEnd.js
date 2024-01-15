@@ -11,21 +11,19 @@ module.exports = function(pool) {
       const plainUser = req.user.toObject();
       // console.log("USER PERMISSION (router.get('/pivot')): ", plainUser.permission)
 
-      // const selectedCity = req.query.city || '';
-      const selectedLocation = req.query.location || '';
+      const selectedCity = req.query.city || 'Lahaina';
       
       const query = `
-        SELECT eh.CheckDate, eh.Name, j.JobDescription, l.City, eh.Location, eh.TotalHours AS TotalHours
+        SELECT eh.PeriodEnd, eh.Name, j.JobDescription, l.City, eh.TotalHours AS TotalHours
         FROM EmployeeHours AS eh
         JOIN JobCode AS j ON RIGHT(eh.Department, 2) = j.JobCode
         JOIN Location AS l ON eh.Co = l.Co
-        WHERE ('${selectedLocation}' = '' OR eh.Location = '${selectedLocation}') -- Replace 'selectedLocation' with the selected location value
-        GROUP BY eh.CheckDate, eh.Name, j.JobDescription, eh.Location
-        ORDER BY eh.CheckDate, eh.Name, j.JobDescription;
+        WHERE l.City = '${selectedCity}' -- Replace 'SelectedCity' with the selected city value
+        GROUP BY eh.PeriodEnd, eh.Name, j.JobDescription, l.City
+        ORDER BY eh.PeriodEnd, eh.Name, j.JobDescription;
       `;
 
       // console.log("Query: ", query);
-      
       
       pool.query(query, (error, results) => {
         if (error) {
@@ -45,40 +43,33 @@ module.exports = function(pool) {
                   Name: row.Name,
                   JobDescription: row.JobDescription,
                   City: row.City,
-                  Location: row.Location,
-                  CheckDates: {} // Initialize an object for Period End values
+                  PeriodEnds: {} // Initialize an object for Period End values
               };
           }
         
-          // Check for null CheckDate before adding to CheckDates
-          if (row.CheckDate !== null) {
-              const formattedDate = new Date(row.CheckDate).toLocaleDateString('en-US', {
+          // Check for null PeriodEnd before adding to PeriodEnds
+          if (row.PeriodEnd !== null) {
+              const formattedDate = new Date(row.PeriodEnd).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: '2-digit',
                   day: '2-digit'
               });
-              pivotedData[key].CheckDates[formattedDate] = row.TotalHours;
+              pivotedData[key].PeriodEnds[formattedDate] = row.TotalHours;
           }
         
-          // console.log("Period End: ", row.CheckDate)
+          // console.log("Period End: ", row.PeriodEnd)
           // console.log("Total Hours: ", row.TotalHours)
         });
       
         // Extract unique job descriptions
         const jobDescriptions = [...new Set(results.map(row => row.JobDescription))];
-
-        // Extract unique cities
-        const cities = [...new Set(results.map(row => row.City))];
-
-        // Extract unique locations
-        const locations = [...new Set(results.map(row => row.Location))];
       
         // Extract unique Period End dates
-        const checkDatesSet = new Set(results.map(result => result.CheckDate && result.CheckDate.toISOString()));
-        const checkDates = Array.from(checkDatesSet).filter(date => date !== null);
+        const periodEndsSet = new Set(results.map(result => result.PeriodEnd && result.PeriodEnd.toISOString()));
+        const periodEnds = Array.from(periodEndsSet).filter(date => date !== null);
       
         // Format the Period End dates as "MM-DD-YYYY"
-        const formattedCheckDates = checkDates.map(date => {
+        const formattedPeriodEnds = periodEnds.map(date => {
           const formattedDate = new Date(date).toLocaleDateString('en-US', {
             year: 'numeric',
             month: '2-digit',
@@ -87,18 +78,16 @@ module.exports = function(pool) {
           return formattedDate;
         });
       
-        // console.log("Period Ends: ", checkDates)
-        // console.log("Formatted Period Ends: ", formattedCheckDates)
+        // console.log("Period Ends: ", periodEnds)
+        // console.log("Formatted Period Ends: ", formattedPeriodEnds)
       
         res.render('pivot.ejs', { 
           req: req,
           username: req.user ? req.user.username : null,
           data: pivotedData, 
           jobDescriptions, 
-          checkDates, 
-          formattedCheckDates, 
-          cities,
-          locations,
+          periodEnds, 
+          formattedPeriodEnds, 
           isLoggedIn: req.isAuthenticated(),
           isAdmin: plainUser.permission === 'admin',
           messages: req.flash()  
