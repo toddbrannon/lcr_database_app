@@ -2,7 +2,7 @@
   <%- include ('partials/header', { isLoggedIn: isLoggedIn, isAdmin: isAdmin }) -%>
 
   <div class="container-fluid mt-5 mb-5 pb-5">
-    <h1 class="mx-4 mt-5 mb-3">Employee Hours Report</h1>
+    <h1 class="mx-4 mt-5 mb-3">Employee Hours Reports</h1>
 
     <form action="/pivot" method="GET">
 
@@ -85,26 +85,44 @@
     });
 
     document.getElementById('applyButton').addEventListener('click', function() {
-        var threshold = document.getElementById('thresholdValue').value;
-        threshold = parseInt(threshold, 10);
-        this.blur(); // Remove focus from the button
+      var threshold = document.getElementById('thresholdValue').value;
+      threshold = parseInt(threshold, 10);
+      this.blur(); // Remove focus from the button
+  
+      // Validate the input
+      if (isNaN(threshold) || threshold < 1 || threshold > 999) {
+          alert('Please enter a number between 1 and 999');
+          return;
+      }
+  
+      // Find the index of the 'Location' column
+      /*var locationColumnIndex = -1;
+      var headers = document.querySelectorAll('#dataTable thead tr th');
+      headers.forEach(function(th, index) {
+          if (th.textContent === 'Location') {
+              locationColumnIndex = index;
+              console.log('Location column index: ' + locationColumnIndex)
+          }
+      });*/
 
-        // Validate the input
-        if (isNaN(threshold) || threshold < 1 || threshold > 999) {
-            alert('Please enter a number between 1 and 999');
-            return;
-        }
+      var locationColumnIndex = 2;
+  
+      // Apply formatting to the table, excluding the 'Location' column
+      document.querySelectorAll('#dataTable tbody tr').forEach(function(tr) {
+          tr.querySelectorAll('td').forEach(function(td, index) {
+              if (index !== locationColumnIndex) {
+                  var value = parseFloat(td.textContent);
+                  if (!isNaN(value) && value > threshold) {
+                      td.style.backgroundColor = 'lightgreen';
+                  } else {
+                      td.style.backgroundColor = ''; // Reset the background
+                  }
+              }
+          });
+      });
+  });
+  
 
-        // Apply formatting to the tables
-        document.querySelectorAll('#dataTable tbody tr td').forEach(function(td) {
-            var value = parseFloat(td.textContent);
-            if (!isNaN(value) && value > threshold) {
-                td.style.backgroundColor = 'lightgreen';
-            } else {
-                td.style.backgroundColor = ''; // Reset the background
-            }
-        });
-    });
     document.getElementById('clearButton').addEventListener('click', function() {
         // Clear the input field
         document.getElementById('thresholdValue').value = '';
