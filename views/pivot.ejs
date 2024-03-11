@@ -8,10 +8,11 @@
 
        <label class = "text-info-lcr ml-4 mr-1 pl-2" for="locationSelect">Select Location:</label>
        <select name="location" id="locationSelect" class="py-1 pr-2 pl-2">
+        <option value="">All</option>
          <% locations.forEach(location => { %>
              <option value="<%= location %>"><%= location %></option>
          <% }); %>
-     </select>
+      </select>
 
 
        <button type="submit" class="btn btn-info-lcr btn-sm mb-1">Filter</button>
@@ -182,14 +183,14 @@
           const a = document.createElement('a');
           a.style.display = 'none';
           a.href = url;
-          a.download = 'report.xlsx';
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(a);
+          a.download = 'data_export.xlsx'; // Name of the file to be downloaded
+          document.body.appendChild(a); // Append the anchor to the body
+          a.click(); // Simulate a click on the anchor to trigger the download
+          document.body.removeChild(a); // Remove the anchor from the body
+          window.URL.revokeObjectURL(url);  // Clean up the object URL
         })
         .catch(error => {
-          console.error('Fetch error:', error);
+          console.error('Error exporting data:', error);
         });
       });
     });
@@ -202,7 +203,7 @@
 
 
 
-/*
+<!-- /*
 document.querySelectorAll('.group-container').forEach(groupContainer => {
   const jobDesc = groupContainer.querySelector('.job-description').textContent;
   const table = groupContainer.querySelector('table');
@@ -220,4 +221,4 @@ document.querySelectorAll('.group-container').forEach(groupContainer => {
 
   groupedData.push({ jobDesc, headers, data });
 });
-*/
+*/ -->

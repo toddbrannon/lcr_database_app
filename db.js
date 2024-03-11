@@ -1,4 +1,4 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 require('dotenv').config(); // Load environment variables from .env file
 
 // Set up MySQL database connection using .env credentials

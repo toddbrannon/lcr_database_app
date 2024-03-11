@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const methodOverride = require('method-override')
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const path = require('path');
 const multer = require('multer');
 const XLSX = require('xlsx');
@@ -94,7 +94,7 @@ const pivotRouter = require('./routes/pivot_router')(pool);
 const locationRouter = require('./routes/locations_router')(pool);
 const jobcodesRouter = require('./routes/jobcodes_router')(pool);
 const uploadRouter = require('./routes/upload_router')(pool, storage, upload, formatDataDateForMySQL);
-const exportRouter = require('./routes/export_router');
+const exportRouter = require('./routes/export_router')(pool);
 
 
 // Use route modules
