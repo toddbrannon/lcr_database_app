@@ -60,7 +60,7 @@
          <!-- New tfoot for the count row -->
          <tfoot>
                <tr>
-               <td colspan="2">Count</td> <!-- colspan=2 for Name and City columns -->
+               <td colspan="3">Count</td> <!-- colspan=2 for Name and City columns -->
                <% formattedCheckDates.forEach(function() { %>
                    <td class="count-cell"></td> <!-- Empty cell for each date column -->
                <% }); %>
@@ -127,7 +127,7 @@
           countCells.forEach(function(cell, index) {
             var count = 0;
             table.querySelectorAll('tbody tr').forEach(function(row) {
-              var cellValue = parseFloat(row.cells[index + 2].textContent);
+              var cellValue = parseFloat(row.cells[index + 3].textContent);
               if (cellValue > threshold) count++;
             });
             cell.textContent = count;
