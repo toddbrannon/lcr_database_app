@@ -3,10 +3,10 @@ require('dotenv').config(); // Load environment variables from .env file
 
 // Create a single database connection using createConnection
 const dbConnection = mysql.createConnection({
-  host: process.env.AWS_HOST,
-  user: process.env.AWS_USER,
-  password: process.env.AWS_PASS,
-  database: process.env.AWS_NAME,
+  host: process.env.DO_HOST,
+  user: process.env.DO_USER,
+  password: process.env.DO_PASS,
+  database: process.env.DO_DB,
 });
 
 // Connect to the database
